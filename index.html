@@ -55,7 +55,6 @@ body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; ba
 h1 { margin: 0 0 8px 0; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px; }
 .subtitle { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
 
-/* 2-Category Tab Layout */
 .tabs { display: flex; justify-content: center; margin-bottom: 24px; background: var(--input-bg); padding: 6px; border-radius: 30px; gap: 6px; }
 .tab-btn { flex: 1; padding: 12px 16px; border-radius: 24px; border: none; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.3s ease; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3); }
@@ -136,12 +135,12 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
     <button class="toggle-btn" onclick="toggleLang()" id="langBtn">EN | हिंदी</button>
   </div>
 
-  <div class="hero-text animate-fade">
+  <div class="hero-text animate-fade" id="heroHeader">
     <h1 id="mainTitle">UPI QR Extractor</h1>
     <p class="subtitle" id="subTitle">Scan, extract, or create UPI codes instantly.</p>
   </div>
 
-  <div class="tabs animate-fade">
+  <div class="tabs animate-fade" id="mainTabs">
     <button class="tab-btn active" id="tabScan" onclick="switchTab('scanTab', this)">
       <svg class="icon" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       <span id="txtTabScan">Scan & Pay</span>
@@ -173,7 +172,6 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
         <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
         <span id="txtStopCam">Stop Camera</span>
       </button>
-      
       <button class="action-btn btn-outline" onclick="document.getElementById('qrFile').click()">
         <svg class="icon" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         <span id="txtUploadImg">Upload Gallery</span>
@@ -198,8 +196,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 
     <div class="btn-group">
       <button class="action-btn btn-primary" onclick="generateQRCard()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg> 
-        <span id="txtGenQR">QR Card</span>
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg> <span id="txtGenQR">QR Card</span>
       </button>
       <button class="action-btn btn-info" onclick="generateLink()">
         <svg class="icon" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
@@ -238,7 +235,8 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
     <h3 id="extractTitle" style="margin-top: 0; color: var(--secondary); text-align: center;">Scanned Successfully</h3>
     <div class="detail-group"><span class="detail-label" id="lblUpi">UPI ID</span><div class="detail-value" id="valUpiId">-</div></div>
     <div class="detail-group"><span class="detail-label" id="lblMerchant">Merchant / Payee Name</span><div class="detail-value" id="valMerchant">-</div></div>
-    <div class="detail-group"><span class="detail-label" id="lblAmount">Amount</span><div class="detail-value" id="valAmount" style="color: var(--secondary); font-size: 1.2rem; font-weight: 700;">-</div></div>
+    
+    <div class="detail-group" id="groupAmount"><span class="detail-label" id="lblAmount">Amount</span><div class="detail-value" id="valAmount" style="color: var(--secondary); font-size: 1.2rem; font-weight: 700;">-</div></div>
     
     <div class="btn-group">
       <button class="action-btn btn-primary" onclick="copyUPI()"><svg class="icon" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> <span id="txtCopy">Copy ID</span></button>
@@ -256,7 +254,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> Made with ❤️ by <strong>You</strong>
+  © <span id="year"></span> Made with ❤️ by <strong>Yo</strong>
 </footer>
 
 <script>
@@ -265,9 +263,15 @@ document.getElementById("year").innerText = new Date().getFullYear();
 // Configuration
 const BASE_PAY_URL = "https://pagalpraani.github.io/upi/index.html";
 
-// --- Initialization & LocalStorage ---
+// Global State
 let currentLang = 'en';
+let isPaymentLinkMode = false;
+let html5QrCode;
+let isScanning = false;
+let isTorchOn = false; 
+let rawAmountVal = "";
 
+// --- Initialization, Link Detection & LocalStorage ---
 window.addEventListener('DOMContentLoaded', () => {
   if(localStorage.getItem("theme") === "light") {
     document.body.classList.add("light-mode");
@@ -275,8 +279,42 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   if(localStorage.getItem("lang")) {
     currentLang = localStorage.getItem("lang");
-    applyLanguage();
   }
+
+  // 1. Detect if visited via a generated Payment Link
+  const urlParams = new URLSearchParams(window.location.search);
+  const pa = urlParams.get('pa');
+
+  if (pa) {
+    isPaymentLinkMode = true;
+    const am = urlParams.get('am') || "";
+    const pn = urlParams.get('pn') || "N/A";
+    
+    // Hide standard UI tabs and header subtitle
+    document.getElementById("mainTabs").classList.add("hidden");
+    document.getElementById("scanTab").classList.add("hidden");
+    document.getElementById("createTab").classList.add("hidden");
+    document.getElementById("subTitle").classList.add("hidden");
+    
+    // Populate Extracted Card with Link Data
+    document.getElementById("valUpiId").innerText = pa;
+    document.getElementById("valMerchant").innerText = pn;
+    rawAmountVal = am;
+    
+    const amountGroup = document.getElementById("groupAmount");
+    if (am) {
+      document.getElementById("valAmount").innerText = `₹ ${am}`;
+      amountGroup.classList.remove("hidden");
+    } else {
+      amountGroup.classList.add("hidden");
+    }
+
+    // Show the payment card directly
+    document.getElementById("extractedCard").classList.remove("hidden");
+  }
+
+  // Apply language translations after checking link mode
+  applyLanguage();
 });
 
 // --- Translations & Theme ---
@@ -285,7 +323,8 @@ const translations = {
     mainTitle: "UPI QR Extractor", subTitle: "Scan, extract, or create UPI codes instantly.",
     txtTabScan: "Scan & Pay", txtTabCreate: "Create & Receive",
     txtStartCam: "Live Camera", txtStopCam: "Stop Camera", scanHint: "Align QR inside the box", txtUploadImg: "Upload Gallery",
-    extractTitle: "Scanned Successfully", lblUpi: "UPI ID", lblMerchant: "Merchant / Payee Name", lblAmount: "Amount",
+    extractTitle: "Scanned Successfully", txtPaymentRequest: "Payment Request",
+    lblUpi: "UPI ID", lblMerchant: "Merchant / Payee Name", lblAmount: "Amount",
     txtCopy: "Copy ID", txtPay: "Pay Now", 
     txtGenQR: "QR Card", txtGenLinkBtn: "Copy Link",
     txtDownload: "Save Image", txtShareGen: "Share Image",
@@ -295,7 +334,8 @@ const translations = {
     mainTitle: "यूपीआई क्यूआर स्कैनर", subTitle: "तुरंत यूपीआई कोड स्कैन करें, निकालें या बनाएं।",
     txtTabScan: "स्कैन और भुगतान", txtTabCreate: "बनाएं और प्राप्त करें",
     txtStartCam: "लाइव कैमरा", txtStopCam: "कैमरा बंद करें", scanHint: "क्यूआर को बॉक्स के अंदर रखें", txtUploadImg: "गैलरी से अपलोड",
-    extractTitle: "सफलतापूर्वक स्कैन किया गया", lblUpi: "यूपीआई आईडी", lblMerchant: "व्यापारी का नाम", lblAmount: "रकम",
+    extractTitle: "सफलतापूर्वक स्कैन किया गया", txtPaymentRequest: "भुगतान अनुरोध",
+    lblUpi: "यूपीआई आईडी", lblMerchant: "व्यापारी का नाम", lblAmount: "रकम",
     txtCopy: "कॉपी करें", txtPay: "भुगतान करें", 
     txtGenQR: "क्यूआर कार्ड", txtGenLinkBtn: "लिंक कॉपी करें",
     txtDownload: "छवि सहेजें", txtShareGen: "छवि साझा करें",
@@ -312,6 +352,7 @@ function toggleLang() {
 function applyLanguage() {
   document.getElementById('langBtn').innerText = currentLang === 'en' ? 'EN | हिंदी' : 'हिंदी | EN';
   const t = translations[currentLang];
+  
   Object.keys(t).forEach(id => {
     const el = document.getElementById(id);
     if(el) {
@@ -324,6 +365,13 @@ function applyLanguage() {
       }
     }
   });
+
+  // Dynamic Title based on whether it's a scan or a shared payment link
+  if (isPaymentLinkMode) {
+    document.getElementById("extractTitle").innerText = t.txtPaymentRequest;
+  } else {
+    document.getElementById("extractTitle").innerText = t.extractTitle;
+  }
 }
 
 function updateThemeIcon(isLight) {
@@ -373,11 +421,6 @@ function validateLive() {
 }
 
 // --- TAB 1: SCAN & PAY LOGIC ---
-let html5QrCode;
-let isScanning = false;
-let isTorchOn = false; 
-let rawAmountVal = "";
-
 function initScanner() { if (!html5QrCode) html5QrCode = new Html5Qrcode("reader"); }
 
 function startScanner() {
@@ -443,7 +486,19 @@ function extractUPI(text) {
 
   document.getElementById("valUpiId").innerText = upiId;
   document.getElementById("valMerchant").innerText = mName;
-  document.getElementById("valAmount").innerText = rawAmountVal ? `₹ ${rawAmountVal}` : "Not Specified";
+  
+  // Dynamically hide Amount if missing
+  const amountGroup = document.getElementById("groupAmount");
+  if (rawAmountVal) {
+    document.getElementById("valAmount").innerText = `₹ ${rawAmountVal}`;
+    amountGroup.classList.remove("hidden");
+  } else {
+    amountGroup.classList.add("hidden");
+  }
+
+  // Ensure title goes back to "Scanned" if they are extracting
+  isPaymentLinkMode = false;
+  applyLanguage();
 
   document.getElementById("extractedCard").classList.remove("hidden");
   document.getElementById("extractedCard").scrollIntoView({ behavior: 'smooth' });
@@ -455,7 +510,6 @@ document.getElementById("qrFile").addEventListener("change", function(e) {
   document.getElementById("extractedCard").classList.add("hidden");
   initScanner();
   html5QrCode.scanFile(file, true).then(decodedText => extractUPI(decodedText)).catch(() => showMessage(currentLang === 'en' ? "Cannot read QR" : "क्यूआर नहीं पढ़ सकते", "error"));
-  // Reset input so same file can be selected again if needed
   e.target.value = ''; 
 });
 
@@ -517,7 +571,9 @@ function generateLink() {
   const data = getFormValues();
   if(!data) return;
   
+  // Generate Link Logic with Payee Name included
   let finalUrl = `${BASE_PAY_URL}?pa=${encodeURIComponent(data.pa)}`;
+  if (data.pn) { finalUrl += `&pn=${encodeURIComponent(data.pn)}`; }
   if (data.am) { finalUrl += `&am=${encodeURIComponent(data.am)}`; }
   
   navigator.clipboard.writeText(finalUrl).then(() => { 
