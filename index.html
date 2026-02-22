@@ -296,7 +296,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> Made with ❤️ by <strong>Pagal</strong>
+  © <span id="year"></span> Made with ❤️ by <strong>one</strong>
 </footer>
 
 <script>
@@ -431,7 +431,6 @@ function startScanner() {
     document.getElementById("btnStartCam").classList.add("hidden");
     document.getElementById("btnStopCam").classList.remove("hidden");
   }).catch(err => {
-    // Upgraded UX for Permission Denial
     showMessage(currentLang === 'en' ? "Camera access denied. Please allow permission." : "कैमरा अनुमति अस्वीकृत। अनुमति दें।", "error");
     document.getElementById("scannerWrapper").classList.add("hidden");
     document.getElementById("btnStartCam").classList.remove("hidden");
@@ -493,7 +492,7 @@ function openUPI() {
   const pn = document.getElementById("valMerchant").innerText;
   let link = `upi://pay?pa=${pa}&pn=${pn}&cu=INR`;
   if (rawAmountVal) link += `&am=${rawAmountVal}`;
-  window.open(link, "_self"); // Better Android deep linking compatibility
+  window.open(link, "_self"); 
 }
 
 async function shareUPI(source) {
@@ -510,7 +509,7 @@ async function shareUPI(source) {
   } catch (err) {}
 }
 
-// --- Modern QR Generation ---
+// --- Generation (GPay Style: High-Contrast, Scannable) ---
 let qrCodeInstance = null;
 
 function generateQR() {
@@ -530,76 +529,47 @@ function generateQR() {
   document.getElementById("generatedQR").innerHTML = "";
   document.getElementById("generatePlaceholder").classList.add("hidden");
 
-  // Point directly to your local image file
+  // YOUR LOCAL FILE PATH GOES HERE
   const upiLogo = "./upi-logo.png"; 
 
-    // Create Modern Styled QR Code
+  // Strict, Scannable GPay-Style QR Code
   qrCodeInstance = new QRCodeStyling({
     width: 260,
     height: 260,
     type: "canvas",
     data: upiString,
-    image: upiLogo, // <-- Your 463x163 logo file or Base64 string goes here
+    image: upiLogo, 
     
-    // 1️⃣ CRITICAL FIX: Boost error correction to 'H' (High). 
-    // This allows up to 30% of the QR code to be covered by a wide logo without breaking it!
+    // Level H (High) is MANDATORY when using a wide center logo
     qrOptions: {
         errorCorrectionLevel: 'H' 
     },
     
+    // Pure Black & White standard squares for maximum scannability
     dotsOptions: {
-        color: "#0F172A", 
-        type: "rounded"   
+        color: "#000000", 
+        type: "square"   
     },
     backgroundOptions: {
         color: "#FFFFFF", 
     },
     
-    // 2️⃣ The formatting fix for wide rectangular logos
+    // GPay Style Logo constraints
     imageOptions: {
         crossOrigin: "anonymous",
-        margin: 8,                // Adds a clean white border around the logo
-        imageSize: 0.55,          // Increased width to 55% so the wide logo is legible
-        hideBackgroundDots: true  // Automatically cuts out a perfect rectangle for your 463x163 image
+        margin: 4,                // Solid white box padding around logo
+        imageSize: 0.4,           // Max safe width for a wide logo (40%)
+        hideBackgroundDots: true  // Deletes dots behind the logo to prevent scan errors
     },
     
+    // Standard Black Eyes
     cornersSquareOptions: {
-        type: "extra-rounded",
-        color: "#6C63FF" 
+        type: "square",
+        color: "#000000" 
     },
     cornersDotOptions: {
-        type: "dot",
-        color: "#10B981" 
-    }
-  });
-
-
-  // Create Modern Styled QR Code
-  qrCodeInstance = new QRCodeStyling({
-    width: 260,
-    height: 260,
-    type: "canvas",
-    data: upiString,
-    image: upiLogo,
-    dotsOptions: {
-        color: "#0F172A", 
-        type: "rounded"   
-    },
-    backgroundOptions: {
-        color: "#FFFFFF", 
-    },
-    imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 10,
-        imageSize: 0.35
-    },
-    cornersSquareOptions: {
-        type: "extra-rounded",
-        color: "#6C63FF" 
-    },
-    cornersDotOptions: {
-        type: "dot",
-        color: "#10B981" 
+        type: "square",
+        color: "#000000" 
     }
   });
 
@@ -618,11 +588,10 @@ function generateQR() {
 
 function downloadQR() {
   if (qrCodeInstance) {
-    qrCodeInstance.download({ name: "My-Premium-UPI-QR", extension: "png" });
+    qrCodeInstance.download({ name: "My-UPI-QR", extension: "png" });
   }
 }
 </script>
 
 </body>
 </html>
-
