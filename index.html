@@ -166,20 +166,71 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 </div>
 
 <script>
-// Translations, Themes, and Tab Logic
+// --- Translations & Theme ---
 let currentLang = 'en';
+
+const translations = {
+  en: {
+    mainTitle: "UPI QR Extractor Pro",
+    tabScan: "Scan",
+    tabUpload: "Upload",
+    tabGenerate: "Generate",
+    extractTitle: "Extracted Details",
+    btnStartCam: "Start Camera",
+    btnStopCam: "Stop Camera",
+    btnGenQR: "Generate QR",
+    btnDownload: "Download QR",
+    btnShareGen: "Share QR",
+    btnCopy: "Copy UPI ID",
+    btnShareExt: "Share UPI ID",
+    btnPay: "Pay Now"
+  },
+  hi: {
+    mainTitle: "यूपीआई क्यूआर एक्सट्रैक्टर प्रो",
+    tabScan: "स्कैन",
+    tabUpload: "अपलोड",
+    tabGenerate: "बनाएं",
+    extractTitle: "निकाला गया विवरण",
+    btnStartCam: "कैमरा चालू करें",
+    btnStopCam: "कैमरा बंद करें",
+    btnGenQR: "क्यूआर बनाएं",
+    btnDownload: "क्यूआर डाउनलोड करें",
+    btnShareGen: "क्यूआर साझा करें",
+    btnCopy: "UPI ID कॉपी करें",
+    btnShareExt: "UPI ID साझा करें",
+    btnPay: "अभी भुगतान करें"
+  }
+};
 
 function toggleLang() {
   currentLang = currentLang === 'en' ? 'hi' : 'en';
-  // (Omitted translation mapping string updates for brevity, functions exactly as before)
-  updateThemeText();
+  const t = translations[currentLang];
+  
+  document.getElementById("mainTitle").innerText = t.mainTitle;
+  document.getElementById("tabScan").innerText = t.tabScan;
+  document.getElementById("tabUpload").innerText = t.tabUpload;
+  document.getElementById("tabGenerate").innerText = t.tabGenerate;
+  document.getElementById("extractTitle").innerText = t.extractTitle;
+  document.getElementById("btnStartCam").innerText = t.btnStartCam;
+  document.getElementById("btnStopCam").innerText = t.btnStopCam;
+  document.getElementById("btnGenQR").innerText = t.btnGenQR;
+  document.getElementById("btnDownload").innerText = t.btnDownload;
+  document.getElementById("btnShareGen").innerText = t.btnShareGen;
+  document.getElementById("btnCopy").innerText = t.btnCopy;
+  document.getElementById("btnShareExt").innerText = t.btnShareExt;
+  document.getElementById("btnPay").innerText = t.btnPay;
+  
+  // Update Placeholders
+  document.getElementById("upiId").placeholder = currentLang === 'en' ? "UPI ID" : "यूपीआई आईडी";
+  document.getElementById("merchantName").placeholder = currentLang === 'en' ? "Merchant Name" : "व्यापारी का नाम";
+  document.getElementById("amount").placeholder = currentLang === 'en' ? "Amount" : "रकम";
+  document.getElementById("newUpiId").placeholder = currentLang === 'en' ? "UPI ID (e.g., name@bank)" : "यूपीआई आईडी (जैसे, name@bank)";
+  document.getElementById("newName").placeholder = currentLang === 'en' ? "Name (Optional)" : "नाम (वैकल्पिक)";
+  document.getElementById("newAmount").placeholder = currentLang === 'en' ? "Amount (Optional)" : "रकम (वैकल्पिक)";
 }
 
 function toggleTheme() {
   document.body.classList.toggle("light-mode");
-  updateThemeText();
-}
-function updateThemeText() {
   const isLight = document.body.classList.contains("light-mode");
   document.getElementById("themeBtn").innerText = isLight ? "🌙 Dark Mode" : "☀️ Light Mode";
 }
@@ -189,7 +240,7 @@ function showMessage(text, type) {
   msg.innerText = text;
   msg.className = "message " + type;
   msg.style.display = "block";
-  setTimeout(()=>msg.style.display="none",3000);
+  setTimeout(()=>msg.style.display="none", 3000);
 }
 
 // --- Context Aware Tab Switching ---
@@ -200,7 +251,6 @@ function switchTab(tabId, btnElement) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   btnElement.classList.add('active');
 
-  // Hide extracted card if moving to Generate
   if (tabId === 'generate') {
     document.getElementById("extractedCard").classList.add("hidden");
     stopScanner();
@@ -209,9 +259,10 @@ function switchTab(tabId, btnElement) {
   }
 }
 
-// --- Robust Camera Logic ---
+// --- Scanner Logic ---
 let html5QrCode;
 let isScanning = false;
+let generatedBlob = null; // Store blob to fix async sharing block
 
 function initScanner() {
   if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
@@ -219,49 +270,43 @@ function initScanner() {
 
 function startScanner() {
   initScanner();
+  document.getElementById("extractedCard").classList.add("hidden"); // Clear previous extraction
   
-  // Safely request camera permissions and get devices
-  Html5Qrcode.getCameras().then(devices => {
-    if (devices && devices.length) {
-      // Prioritize back camera if multiple exist
-      let cameraId = devices.length > 1 ? devices[1].id : devices[0].id; 
-      
-      html5QrCode.start(
-        cameraId, 
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        (decodedText) => {
-          extractUPI(decodedText);
-          stopScanner(); // Auto-stop to save battery
-        },
-        (errorMessage) => { /* Ignore constant scan frame errors */ }
-      ).then(() => {
-        isScanning = true;
-        document.getElementById("btnStartCam").classList.add("hidden");
-        document.getElementById("btnStopCam").classList.remove("hidden");
-      });
-    } else {
-      showMessage("No cameras found.", "error");
-    }
+  html5QrCode.start(
+    { facingMode: "environment" }, // Robust selection of rear camera
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    (decodedText) => {
+      extractUPI(decodedText);
+      stopScanner(); // Auto-stop to save battery
+    },
+    (errorMessage) => { /* Ignore constant scan frame errors */ }
+  ).then(() => {
+    isScanning = true;
+    document.getElementById("btnStartCam").classList.add("hidden");
+    document.getElementById("btnStopCam").classList.remove("hidden");
   }).catch(err => {
     console.error(err);
-    showMessage("Camera permissions denied.", "error");
+    showMessage(currentLang === 'en' ? "Camera error or permission denied." : "कैमरा त्रुटि या अनुमति अस्वीकृत।", "error");
   });
 }
 
-function stopScanner() {
+async function stopScanner() {
   if (html5QrCode && isScanning) {
-    html5QrCode.stop().then(() => {
+    try {
+      await html5QrCode.stop();
       isScanning = false;
       document.getElementById("btnStartCam").classList.remove("hidden");
       document.getElementById("btnStopCam").classList.add("hidden");
-    });
+    } catch(err) {
+      console.error("Failed to stop scanner cleanly.", err);
+    }
   }
 }
 
 // --- Data Extraction ---
 function extractUPI(text) {
   if (!text.startsWith("upi://pay")) {
-    showMessage("Invalid UPI QR Code", "error");
+    showMessage(currentLang === 'en' ? "Invalid UPI QR Code" : "अमान्य यूपीआई क्यूआर", "error");
     return;
   }
   const url = new URL(text);
@@ -272,26 +317,28 @@ function extractUPI(text) {
   document.getElementById("amount").dataset.raw = rawAmount;
   document.getElementById("amount").value = rawAmount ? `₹ ${rawAmount}` : "";
 
-  // Make Context-Aware UI visible
   document.getElementById("extractedCard").classList.remove("hidden");
-  showMessage("Extracted Successfully", "success");
+  showMessage(currentLang === 'en' ? "Extracted Successfully" : "सफलतापूर्वक निकाला गया", "success");
 }
 
 document.getElementById("qrFile").addEventListener("change", function(e) {
   const file = e.target.files[0];
   if(!file) return;
+  document.getElementById("extractedCard").classList.add("hidden"); // Clear previous extraction
   initScanner();
   html5QrCode.scanFile(file, true)
     .then(decodedText => extractUPI(decodedText))
-    .catch(() => showMessage("Cannot read QR from image", "error"));
+    .catch(() => showMessage(currentLang === 'en' ? "Cannot read QR from image" : "छवि से क्यूआर नहीं पढ़ सकते", "error"));
 });
 
 // --- Action Buttons ---
 function copyUPI() {
-  const input = document.getElementById("upiId");
-  input.select();
-  document.execCommand("copy");
-  showMessage("UPI ID Copied!", "success");
+  const upiId = document.getElementById("upiId").value;
+  navigator.clipboard.writeText(upiId).then(() => {
+    showMessage(currentLang === 'en' ? "UPI ID Copied!" : "UPI ID कॉपी किया गया!", "success");
+  }).catch(() => {
+    showMessage(currentLang === 'en' ? "Failed to copy" : "कॉपी करने में विफल", "error");
+  });
 }
 
 function openUPI() {
@@ -307,41 +354,34 @@ function openUPI() {
 // --- Context Aware Sharing ---
 async function shareUPI(source) {
   if (!navigator.share) {
-    showMessage("Sharing not supported on this browser.", "error");
+    showMessage(currentLang === 'en' ? "Sharing not supported." : "साझाकरण समर्थित नहीं है।", "error");
     return;
   }
 
   try {
     if (source === 'extract') {
-      // Only share the raw UPI ID when scanning/uploading
       const upiId = document.getElementById("upiId").value;
       await navigator.share({
         title: "UPI ID",
         text: upiId
       });
-      showMessage("Shared Successfully", "success");
+      showMessage(currentLang === 'en' ? "Shared Successfully" : "सफलतापूर्वक साझा किया गया", "success");
 
     } else if (source === 'generate') {
-      // Share the actual generated QR Code Image when generating
-      const canvas = document.querySelector("#generatedQR canvas");
-      if (!canvas) return;
-
-      canvas.toBlob(async (blob) => {
-        const file = new File([blob], "UPI-QR.png", { type: "image/png" });
-        
-        // Check if browser allows file sharing
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: 'Scan to Pay',
-            files: [file]
-          });
-        } else {
-          // Fallback if file sharing isn't supported (e.g., some desktop browsers)
-          const fallbackLink = document.getElementById("newUpiId").value;
-          await navigator.share({ title: 'UPI ID', text: fallbackLink });
-        }
-        showMessage("Shared Successfully", "success");
-      });
+      if (!generatedBlob) return;
+      
+      const file = new File([generatedBlob], "UPI-QR.png", { type: "image/png" });
+      
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: 'Scan to Pay',
+          files: [file]
+        });
+      } else {
+        const fallbackLink = document.getElementById("newUpiId").value;
+        await navigator.share({ title: 'UPI ID', text: fallbackLink });
+      }
+      showMessage(currentLang === 'en' ? "Shared Successfully" : "सफलतापूर्वक साझा किया गया", "success");
     }
   } catch (err) {
     console.error(err);
@@ -350,12 +390,12 @@ async function shareUPI(source) {
 
 // --- Generation ---
 function generateQR() {
-  const pa = document.getElementById("newUpiId").value.trim();
+  const pa = document.getElementById("newUpiId").value.trim().toLowerCase(); // Sanitized
   const pn = document.getElementById("newName").value.trim();
   const am = document.getElementById("newAmount").value.trim();
   
   if (!pa || !pa.includes('@')) { 
-    showMessage("Please enter a valid UPI ID with '@'", "error"); 
+    showMessage(currentLang === 'en' ? "Please enter a valid UPI ID" : "कृपया एक मान्य यूपीआई आईडी दर्ज करें", "error"); 
     return; 
   }
 
@@ -365,15 +405,22 @@ function generateQR() {
   document.getElementById("generatedQR").innerHTML = "";
 
   QRCode.toCanvas(upiString, { width: 220, margin: 2 }, function (err, canvas) {
+    if(err) return;
     document.getElementById("generatedQR").appendChild(canvas);
-    // Show Generate Actions
     document.getElementById("genActions").classList.remove("hidden");
+    
+    // Pre-generate blob for synchronous sharing later
+    canvas.toBlob((blob) => {
+        generatedBlob = blob;
+    }, "image/png");
   });
-  showMessage("QR Generated!", "success");
+  
+  showMessage(currentLang === 'en' ? "QR Generated!" : "क्यूआर बनाया गया!", "success");
 }
 
 function downloadQR() {
   const canvas = document.querySelector("#generatedQR canvas");
+  if (!canvas) return;
   const link = document.createElement('a');
   link.href = canvas.toDataURL("image/png");
   link.download = 'My-UPI-QR.png';
