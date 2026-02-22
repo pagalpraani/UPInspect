@@ -61,8 +61,8 @@ body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; ba
 h1 { margin: 0; font-weight: 800; font-size: 1.7rem; letter-spacing: -0.5px; }
 .subtitle { color: var(--text-muted); font-size: 0.95rem; margin: 4px 0 0 0; font-weight: 500; }
 
-.tabs { display: flex; justify-content: center; margin-bottom: 24px; background: var(--input-bg); padding: 6px; border-radius: 30px; gap: 6px; }
-.tab-btn { flex: 1; padding: 12px 16px; border-radius: 24px; border: none; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.3s ease; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.tabs { display: flex; justify-content: center; margin-bottom: 24px; background: var(--input-bg); padding: 6px; border-radius: 30px; gap: 6px; flex-wrap: wrap; }
+.tab-btn { flex: 1; padding: 12px 14px; border-radius: 24px; border: none; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.3s ease; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
 .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3); }
 
 .card { background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; }
@@ -83,7 +83,6 @@ button.action-btn:active { transform: scale(0.97); }
 button.action-btn::after { content: ""; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255,255,255,0.3); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease; opacity: 1; }
 button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 
-/* Re-mapped button colors to the Trust Blue system */
 .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; }
 .btn-primary:hover { opacity: 0.9; }
 .btn-success { background: var(--secondary); color: white; }
@@ -106,7 +105,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 .torch-btn.active { background: #EAB308; color: #000; border-color: #EAB308; box-shadow: 0 0 15px rgba(234, 179, 8, 0.5); }
 .torch-btn:active { transform: scale(0.9); }
 
-/* MERCHANT STANDEE CARD (Upgraded with Trust Blue) */
+/* MERCHANT STANDEE CARD */
 .qr-standee-wrapper { background: #FFFFFF; border-radius: 16px; padding: 24px; width: 100%; max-width: 320px; margin: 20px auto; color: #0F172A; box-shadow: 0 12px 32px rgba(0,0,0,0.15); font-family: 'Inter', sans-serif; border: 1px solid #E2E8F0; }
 .qr-standee-header { text-align: center; margin-bottom: 16px; }
 .qr-standee-header h3 { margin: 0; font-size: 1.25rem; color: #1E3A8A; font-weight: 800; word-break: break-word; }
@@ -129,7 +128,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 .hidden { display: none !important; }
 .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-@media (max-width: 480px) { .btn-group { flex-direction: column; } }
+@media (max-width: 480px) { .btn-group { flex-direction: column; } .tab-btn { font-size: 0.85rem; padding: 10px; } }
 </style>
 </head>
 <body>
@@ -160,11 +159,11 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
   <div class="tabs animate-fade" id="mainTabs">
     <button class="tab-btn active" id="tabScan" onclick="switchTab('scanTab', this)">
       <svg class="icon" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-      <span id="txtTabScan">Inspect & Pay</span>
+      <span id="txtTabScan">Scan & Pay</span>
     </button>
     <button class="tab-btn" id="tabCreate" onclick="switchTab('createTab', this)">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
-      <span id="txtTabCreate">Create & Receive</span>
+      <svg class="icon" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+      <span id="txtTabCreate">Create Links & QR</span>
     </button>
   </div>
 
@@ -274,7 +273,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> UPInspect | Created by <strong>You</strong>
+  © <span id="year"></span> UPInspect | Created by <strong>Yo</strong>
 </footer>
 
 <script>
@@ -337,7 +336,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const translations = {
   en: {
     mainTitle: "UPInspect", subTitle: "Decode. Verify. Pay.",
-    txtTabScan: "Inspect & Pay", txtTabCreate: "Create & Receive",
+    txtTabScan: "Scan & Pay", txtTabCreate: "Create Links & QR",
     txtStartCam: "Live Camera", txtStopCam: "Stop Camera", scanHint: "Align QR inside the box", txtUploadImg: "Upload Gallery",
     extractTitle: "Payment Verified", txtPaymentRequest: "Payment Request",
     lblUpi: "UPI ID", lblMerchant: "Merchant Name", lblAmount: "Fixed Amount",
@@ -348,7 +347,7 @@ const translations = {
   },
   hi: {
     mainTitle: "UPInspect", subTitle: "डिकोड। सत्यापित करें। भुगतान करें।",
-    txtTabScan: "निरीक्षण और भुगतान", txtTabCreate: "बनाएं और प्राप्त करें",
+    txtTabScan: "स्कैन और भुगतान", txtTabCreate: "लिंक और क्यूआर बनाएं",
     txtStartCam: "लाइव कैमरा", txtStopCam: "कैमरा बंद करें", scanHint: "क्यूआर को बॉक्स के अंदर रखें", txtUploadImg: "गैलरी अपलोड",
     extractTitle: "भुगतान सत्यापित", txtPaymentRequest: "भुगतान अनुरोध",
     lblUpi: "यूपीआई आईडी", lblMerchant: "व्यापारी का नाम", lblAmount: "निश्चित राशि",
@@ -382,7 +381,6 @@ function applyLanguage() {
     }
   });
 
-  // Dynamic Title Override
   if (isPaymentLinkMode) {
     document.getElementById("extractTitle").lastChild.nodeValue = " " + t.txtPaymentRequest;
   }
