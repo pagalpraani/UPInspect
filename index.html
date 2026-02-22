@@ -82,6 +82,8 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 .btn-success:hover { background: var(--secondary-hover); }
 .btn-danger { background: var(--danger); color: white; }
 .btn-info { background: var(--info); color: white; }
+.btn-outline { background: var(--glass); color: var(--text); border: 1px solid var(--card-border); }
+.btn-outline:hover { background: var(--input-bg); }
 
 /* --- CAMERA SCANNER FIXES --- */
 .scanner-container { position: relative; border-radius: 16px; overflow: hidden; background: #000; margin-bottom: 16px; width: 100%; min-height: 250px; }
@@ -93,13 +95,17 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 .scan-hint { color: white; margin-top: 20px; font-size: 0.9rem; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 11; }
 
+/* Torch Button */
+.torch-btn { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; color: white; backdrop-filter: blur(8px); transition: all 0.3s ease; pointer-events: auto; }
+.torch-btn.active { background: #EAB308; color: #000; border-color: #EAB308; box-shadow: 0 0 15px rgba(234, 179, 8, 0.5); }
+.torch-btn:active { transform: scale(0.9); }
+
 #generatePlaceholder { padding: 40px 20px; border: 2px dashed var(--card-border); border-radius: 16px; margin: 20px 0; color: var(--text-muted); text-align: center; }
 
 /* --- MERCHANT STANDEE CARD --- */
 .qr-standee-wrapper { background: #FFFFFF; border-radius: 16px; padding: 24px; width: 100%; max-width: 320px; margin: 20px auto; color: #0F172A; box-shadow: 0 12px 32px rgba(0,0,0,0.15); font-family: 'Inter', sans-serif; border: 1px solid #E2E8F0; }
 .qr-standee-header { text-align: center; margin-bottom: 16px; }
 .qr-standee-header h3 { margin: 0; font-size: 1.25rem; color: #0F172A; font-weight: 700; word-break: break-word; }
-/* Added UPI ID Styling */
 .qr-standee-upi { margin: 4px 0 0 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.85rem; color: #6C63FF; font-weight: 600; word-break: break-all; }
 .qr-standee-header p.scan-prompt { margin: 10px 0 0 0; color: #64748B; font-size: 0.9rem; font-weight: 500; }
 .qr-standee-amount { color: #10B981; font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
@@ -152,6 +158,9 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
       <div class="scan-overlay">
         <div class="scan-box"><div class="scan-laser"></div></div>
         <div class="scan-hint" id="scanHint">Align QR inside the box</div>
+        <button id="btnTorch" class="torch-btn hidden" onclick="toggleTorch()" aria-label="Toggle Flashlight">
+          <svg class="icon" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        </button>
       </div>
     </div>
     
@@ -188,9 +197,15 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
       <input type="number" id="newAmount" placeholder="₹ 0.00">
     </div>
 
-    <button class="action-btn btn-primary" id="btnGenQR" onclick="generateQR()">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg> <span id="txtGenQR">Generate QR</span>
-    </button>
+    <div class="btn-group">
+      <button class="action-btn btn-primary" id="btnGenQR" onclick="generateQR()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg> <span id="txtGenQR">Generate QR</span>
+      </button>
+      <button class="action-btn btn-outline" id="btnReset" onclick="resetGenerate()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> 
+        <span id="txtReset">Reset</span>
+      </button>
+    </div>
     
     <div id="generatePlaceholder">Your QR will appear here</div>
     
@@ -242,7 +257,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> Made with ❤️ by <strong>three</strong>
+  © <span id="year"></span> Made with ❤️ by <strong>Your Name</strong>
 </footer>
 
 <script>
@@ -269,7 +284,7 @@ const translations = {
     tabScan: "Scan", tabUpload: "Upload", tabGenerate: "Create",
     txtStartCam: "Start Camera", txtStopCam: "Stop Camera", scanHint: "Align QR inside the box",
     extractTitle: "Scanned Successfully", lblUpi: "UPI ID", lblMerchant: "Merchant / Payee Name", lblAmount: "Amount",
-    txtCopy: "Copy ID", txtPay: "Pay Now", txtGenQR: "Generate QR",
+    txtCopy: "Copy ID", txtPay: "Pay Now", txtGenQR: "Generate QR", txtReset: "Reset",
     txtDownload: "Download Card", txtShareGen: "Share Card", uploadLabel: "Select QR Image",
     txtScanToPay: "Scan and Pay", trustText: "100% Secure. Runs locally in your browser."
   },
@@ -278,7 +293,7 @@ const translations = {
     tabScan: "स्कैन", tabUpload: "अपलोड", tabGenerate: "बनाएं",
     txtStartCam: "कैमरा चालू करें", txtStopCam: "कैमरा बंद करें", scanHint: "क्यूआर को बॉक्स के अंदर रखें",
     extractTitle: "सफलतापूर्वक स्कैन किया गया", lblUpi: "यूपीआई आईडी", lblMerchant: "व्यापारी का नाम", lblAmount: "रकम",
-    txtCopy: "कॉपी करें", txtPay: "भुगतान करें", txtGenQR: "क्यूआर बनाएं",
+    txtCopy: "कॉपी करें", txtPay: "भुगतान करें", txtGenQR: "क्यूआर बनाएं", txtReset: "रीसेट",
     txtDownload: "कार्ड डाउनलोड करें", txtShareGen: "कार्ड साझा करें", uploadLabel: "क्यूआर छवि चुनें",
     txtScanToPay: "भुगतान करने के लिए स्कैन करें", trustText: "100% सुरक्षित। आपके ब्राउज़र में चलता है।"
   }
@@ -348,6 +363,7 @@ function validateUpiLive() {
 // --- Scanner Logic Fixes ---
 let html5QrCode;
 let isScanning = false;
+let isTorchOn = false; // Torch state
 let rawAmountVal = "";
 
 function initScanner() { if (!html5QrCode) html5QrCode = new Html5Qrcode("reader"); }
@@ -356,13 +372,10 @@ function startScanner() {
   initScanner();
   document.getElementById("extractedCard").classList.add("hidden");
   
-  // CRITICAL FIX: Make the wrapper visible BEFORE starting the camera
-  // The library needs to see the container's physical dimensions to render properly.
   document.getElementById("scannerWrapper").classList.remove("hidden");
   document.getElementById("btnStartCam").classList.add("hidden");
   document.getElementById("btnStopCam").classList.remove("hidden");
   
-  // Dynamically calculate scanning box size for smaller mobile screens
   let qrboxSize = window.innerWidth < 350 ? 180 : 250;
 
   html5QrCode.start(
@@ -372,11 +385,13 @@ function startScanner() {
     (errorMessage) => {}
   ).then(() => {
     isScanning = true;
+    // Reveal torch button once camera starts successfully
+    document.getElementById("btnTorch").classList.remove("hidden");
   }).catch(err => {
-    // If it fails, revert the UI
     document.getElementById("scannerWrapper").classList.add("hidden");
     document.getElementById("btnStartCam").classList.remove("hidden");
     document.getElementById("btnStopCam").classList.add("hidden");
+    document.getElementById("btnTorch").classList.add("hidden");
     showMessage(currentLang === 'en' ? "Camera access denied or unavailable." : "कैमरा अनुमति अस्वीकृत या उपलब्ध नहीं।", "error");
   });
 }
@@ -386,10 +401,29 @@ async function stopScanner() {
     try { 
       await html5QrCode.stop(); 
       isScanning = false; 
+      isTorchOn = false;
+      document.getElementById("btnTorch").classList.remove("active");
+      document.getElementById("btnTorch").classList.add("hidden");
       document.getElementById("scannerWrapper").classList.add("hidden"); 
       document.getElementById("btnStartCam").classList.remove("hidden"); 
       document.getElementById("btnStopCam").classList.add("hidden"); 
     } catch(err) {}
+  }
+}
+
+// --- Toggle Torch ---
+function toggleTorch() {
+  if (html5QrCode && isScanning) {
+    isTorchOn = !isTorchOn;
+    html5QrCode.applyVideoConstraints({
+      advanced: [{ torch: isTorchOn }]
+    }).then(() => {
+      const btn = document.getElementById("btnTorch");
+      isTorchOn ? btn.classList.add("active") : btn.classList.remove("active");
+    }).catch(err => {
+      isTorchOn = false;
+      showMessage(currentLang === 'en' ? "Flashlight not supported on this device." : "इस डिवाइस पर फ्लैशलाइट समर्थित नहीं है।", "error");
+    });
   }
 }
 
@@ -430,7 +464,7 @@ function openUPI() {
   window.open(link, "_self"); 
 }
 
-// --- Generation (Merchant Standee Style) ---
+// --- Generate Logic ---
 function generateQR() {
   const pa = document.getElementById("newUpiId").value.trim().toLowerCase();
   const pn = document.getElementById("newName").value.trim();
@@ -449,7 +483,7 @@ function generateQR() {
 
   // Update Standee Header text
   document.getElementById("standeeName").innerText = pn ? pn : (currentLang === 'en' ? "UPI Payment" : "यूपीआई भुगतान");
-  document.getElementById("standeeUpiId").innerText = pa; // Inject the UPI ID into the UI
+  document.getElementById("standeeUpiId").innerText = pa;
   document.getElementById("standeeAmount").innerText = am ? `₹ ${am}` : "";
 
   // Pure, Untouched, Highly Scannable Base QR Code
@@ -469,7 +503,22 @@ function generateQR() {
   document.getElementById("genActions").classList.remove("hidden");
   
   document.getElementById("qrStandee").scrollIntoView({ behavior: "smooth", block: "nearest" });
-  showMessage(currentLang === 'en' ? "Card Created!" : "कार्ड बनाया गया!", "success");
+}
+
+// --- Reset Logic ---
+function resetGenerate() {
+  document.getElementById("newUpiId").value = "";
+  document.getElementById("newName").value = "";
+  document.getElementById("newAmount").value = "";
+  
+  document.getElementById("newUpiId").classList.remove("valid", "invalid");
+  
+  document.getElementById("qrStandee").classList.add("hidden");
+  document.getElementById("genActions").classList.add("hidden");
+  document.getElementById("generatePlaceholder").classList.remove("hidden");
+  
+  // Scroll back to top of form
+  document.getElementById("generate").scrollIntoView({ behavior: "smooth" });
 }
 
 // --- High-Resolution Export Engine ---
