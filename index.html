@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UPI QR Extractor & Generator</title>
+
+  <!-- Camera Scanner -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <!-- QR Generator -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+  <style>
+    body { font-family: Arial; text-align: center; padding: 20px; }
+    #reader { width: 300px; margin: auto; }
+    input { padding: 8px; margin: 5px; width: 250px; }
+    button { padding: 8px 12px; margin: 5px; cursor: pointer; }
+    #generatedQR { margin-top: 15px; }
+    img { max-width: 250px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<h2>UPI QR Extractor & Generator</h2>
+
+<h3>📷 Scan from Camera</h3>
+<div id="reader"></div>
+
+<hr>
+
+<h3>🖼 Upload QR Image</h3>
+<input type="file" id="qrFile" accept="image/*">
+<br>
+<img id="preview" />
+
+<hr>
+
+<h3>Extracted Details</h3>
+<input type="text" id="upiId" placeholder="UPI ID" readonly><br>
+<input type="text" id="merchantName" placeholder="Merchant Name" readonly><br>
+<input type="text" id="amount" placeholder="Amount" readonly><br>
+
+<button onclick="copyField('upiId')">Copy UPI ID</button>
+<button onclick="openUPI()">Pay Now</button>
+
+<hr>
+
+<h3>Generate New UPI QR</h3>
+<input type="text" id="newUpiId" placeholder="Enter UPI ID"><br>
+<input type="text" id="newName" placeholder="Enter Name"><br>
+<input type="number" id="newAmount" placeholder="Enter Amount"><br>
+
+<button onclick="generateQR()">Generate QR</button>
+
+<div id="generatedQR"></div>
+
+<script>
+
+// -------- Extract UPI --------
+function extractUPI(text) {
+  try {
+    if (!text.startsWith("upi://pay")) {
+      alert("Invalid QR: Not a UPI QR");
+      return;
+    }
+
+    const url = new URL(text);
+    const pa = url.searchParams.get("pa");
+    const pn = url.searchParams.get("pn");
+    const am = url.searchParams.get("am");
+
+    if (!pa) {
+      alert("Invalid UPI QR: Missing UPI ID");
+      return;
+    }
+
+    document.getElementById("upiId").value = pa;
+    document.getElementById("merchantName").value = pn || "N/A";
+    document.getElementById("amount").value = am || "Not Fixed";
+
+  } catch (e) {
+    alert("Invalid QR format");
+  }
+}
+
+// -------- Camera Scanner --------
+function onScanSuccess(decodedText) {
+  extractUPI(decodedText);
+}
+
+let scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+scanner.render(onScanSuccess);
+
+// -------- File Upload Scanner --------
+document.getElementById("qrFile").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    const imageData = event.target.result;
+
+    document.getElementById("preview").src = imageData;
+
+    const html5QrCode = new Html5Qrcode("reader");
+
+    html5QrCode.scanFile(file, true)
+      .then(decodedText => {
+        extractUPI(decodedText);
+      })
+      .catch(err => {
+        alert("Could not read QR from image");
+      });
+  };
+
+  reader.readAsDataURL(file);
+});
+
+// -------- Copy --------
+function copyField(id) {
+  const input = document.getElementById(id);
+  input.select();
+  document.execCommand("copy");
+  alert("Copied!");
+}
+
+// -------- Open UPI App --------
+function openUPI() {
+  const pa = document.getElementById("upiId").value;
+  const pn = document.getElementById("merchantName").value;
+  const am = document.getElementById("amount").value;
+
+  if (!pa) {
+    alert("No UPI ID found");
+    return;
+  }
+
+  let link = `upi://pay?pa=${pa}&pn=${pn}&cu=INR`;
+
+  if (am && am !== "Not Fixed") {
+    link += `&am=${am}`;
+  }
+
+  window.location.href = link;
+}
+
+// -------- Generate QR --------
+function generateQR() {
+  const pa = document.getElementById("newUpiId").value;
+  const pn = document.getElementById("newName").value;
+  const am = document.getElementById("newAmount").value;
+
+  if (!pa) {
+    alert("Enter UPI ID");
+    return;
+  }
+
+  let upiString = `upi://pay?pa=${pa}&pn=${pn}&cu=INR`;
+
+  if (am) {
+    upiString += `&am=${am}`;
+  }
+
+  document.getElementById("generatedQR").innerHTML = "";
+
+  QRCode.toCanvas(upiString, { width: 200 }, function (err, canvas) {
+    if (err) console.error(err);
+    document.getElementById("generatedQR").appendChild(canvas);
+  });
+}
+
+</script>
+
+</body>
+</html>
