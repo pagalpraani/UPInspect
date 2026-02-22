@@ -37,21 +37,28 @@ body.light-mode {
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+/* Smooth Page Load Animation */
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background: var(--bg-gradient);
   color: var(--text);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   padding: 16px;
   min-height: 100vh;
   transition: background 0.4s ease, color 0.4s ease;
+  opacity: 0;
+  animation: pageLoad 0.6s ease forwards;
 }
 
-.container { width: 100%; max-width: 600px; padding-bottom: 80px; }
+@keyframes pageLoad {
+  to { opacity: 1; }
+}
 
-/* Micro-Animations */
+.container { width: 100%; max-width: 600px; padding-bottom: 20px; flex: 1; }
+
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -63,7 +70,7 @@ body {
 
 .toggle-btn {
   background: var(--glass); color: var(--text); border: 1px solid var(--card-border);
-  padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.3s;
+  padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.3s ease;
   font-weight: 500; display: flex; align-items: center; gap: 6px;
 }
 .toggle-btn:hover { background: var(--card); }
@@ -80,35 +87,44 @@ h1 { margin: 0 0 8px 0; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.
 }
 .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3); }
 
+/* Glass Hover Effect on Cards */
 .card {
   background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--card-border); border-radius: 20px;
   padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08); }
 
-/* Form Elements */
 input {
   width: 100%; padding: 14px 16px; margin: 8px 0 16px; border-radius: 12px;
   border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text);
-  font-size: 1rem; transition: all 0.3s; outline: none;
+  font-size: 1rem; transition: all 0.3s ease; outline: none;
 }
 input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15); }
 input.valid { border-color: var(--secondary); }
 input.invalid { border-color: var(--danger); }
 
-/* Premium Read-Only Details */
 .detail-group { margin-bottom: 16px; text-align: left; }
 .detail-label { display: block; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
 .detail-value { background: var(--input-bg); padding: 14px 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 500; border: 1px solid var(--card-border); word-break: break-all; }
 
-/* Buttons */
 .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+
+/* Micro UX: Ripple Effect & Fixed Transition */
 button.action-btn {
   padding: 14px 20px; border-radius: 14px; border: none; cursor: pointer;
-  font-weight: 600; font-size: 1rem; transition: all 0.2s active; flex: 1; min-width: 130px;
+  font-weight: 600; font-size: 1rem; transition: all 0.2s ease; flex: 1; min-width: 130px;
   display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px;
+  position: relative; overflow: hidden;
 }
 button.action-btn:active { transform: scale(0.97); }
+button.action-btn::after {
+  content: ""; position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+  background: rgba(255,255,255,0.3); border-radius: 50%; transform: translate(-50%, -50%);
+  pointer-events: none; transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease; opacity: 1;
+}
+button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 
 .btn-primary { background: var(--primary); color: white; }
 .btn-primary:hover { background: var(--primary-hover); }
@@ -117,16 +133,17 @@ button.action-btn:active { transform: scale(0.97); }
 .btn-danger { background: var(--danger); color: white; }
 .btn-info { background: var(--info); color: white; }
 
-/* Scanner UI Improvements */
 .scanner-container { position: relative; border-radius: 16px; overflow: hidden; background: #000; margin-bottom: 16px; }
 #reader { width: 100%; border: none; }
 .scan-overlay {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;
   display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 10;
 }
+/* Razorpay-style Scanner Glow */
 .scan-box {
-  width: 200px; height: 200px; border: 2px solid rgba(255,255,255,0.5); border-radius: 16px;
-  position: relative; box-shadow: 0 0 0 4000px rgba(0,0,0,0.4);
+  width: 200px; height: 200px; border-radius: 16px; position: relative;
+  border: 2px solid var(--secondary);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 0 4000px rgba(0,0,0,0.5);
 }
 .scan-laser {
   width: 100%; height: 2px; background: var(--secondary); box-shadow: 0 0 10px var(--secondary);
@@ -140,22 +157,18 @@ button.action-btn:active { transform: scale(0.97); }
 }
 .scan-hint { color: white; margin-top: 20px; font-size: 0.9rem; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 11; }
 
-/* Placeholders & Generated Content */
-#generatePlaceholder { padding: 40px 20px; border: 2px dashed var(--card-border); border-radius: 16px; margin: 20px 0; color: var(--text-muted); }
+#generatePlaceholder { padding: 40px 20px; border: 2px dashed var(--card-border); border-radius: 16px; margin: 20px 0; color: var(--text-muted); text-align: center; }
 #generatedQR { margin-top: 20px; display: flex; justify-content: center; }
 #generatedQR canvas { border-radius: 16px; background: white; padding: 8px; }
 
-/* Trust Badge */
 .trust-badge { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; }
 .trust-badge svg { width: 16px; height: 16px; fill: currentColor; }
 
-.message { padding: 12px; border-radius: 10px; margin-top: 16px; display: none; text-align: center; font-weight: 500; animation: fadeInUp 0.3s; }
+.message { padding: 12px; border-radius: 10px; margin-top: 16px; display: none; text-align: center; font-weight: 500; z-index: 100; }
 .success { background: rgba(16, 185, 129, 0.15); color: var(--secondary); border: 1px solid rgba(16, 185, 129, 0.3); }
 .error { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
 
 .hidden { display: none !important; }
-
-/* Icons */
 .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 @media (max-width: 480px) {
@@ -197,11 +210,11 @@ button.action-btn:active { transform: scale(0.97); }
     <div class="btn-group">
       <button class="action-btn btn-primary" id="btnStartCam" onclick="startScanner()">
         <svg class="icon" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        Start Camera
+        <span id="txtStartCam">Start Camera</span>
       </button>
       <button class="action-btn btn-danger hidden" id="btnStopCam" onclick="stopScanner()">
         <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-        Stop Camera
+        <span id="txtStopCam">Stop Camera</span>
       </button>
     </div>
   </div>
@@ -228,7 +241,7 @@ button.action-btn:active { transform: scale(0.97); }
     </div>
 
     <button class="action-btn btn-primary" id="btnGenQR" onclick="generateQR()">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg> Generate QR
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg> <span id="txtGenQR">Generate QR</span>
     </button>
     
     <div id="generatePlaceholder">Your QR will appear here</div>
@@ -236,10 +249,10 @@ button.action-btn:active { transform: scale(0.97); }
     
     <div class="btn-group hidden" id="genActions">
       <button class="action-btn btn-success" id="btnDownload" onclick="downloadQR()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> Download
+        <svg class="icon" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> <span id="txtDownload">Download</span>
       </button>
       <button class="action-btn btn-info" id="btnShareGen" onclick="shareUPI('generate')">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg> Share
+        <svg class="icon" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg> <span id="txtShareGen">Share</span>
       </button>
     </div>
   </div>
@@ -264,10 +277,10 @@ button.action-btn:active { transform: scale(0.97); }
     
     <div class="btn-group">
       <button class="action-btn btn-primary" id="btnCopy" onclick="copyUPI()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copy ID
+        <svg class="icon" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> <span id="txtCopy">Copy ID</span>
       </button>
       <button class="action-btn btn-success" id="btnPay" onclick="openUPI()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg> Pay Now
+        <svg class="icon" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg> <span id="txtPay">Pay Now</span>
       </button>
     </div>
   </div>
@@ -281,67 +294,92 @@ button.action-btn:active { transform: scale(0.97); }
 
 </div>
 
+<footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
+  © <span id="year"></span> Made with ❤️ by <strong>Your Name</strong>
+</footer>
+
 <script>
-// --- Translations & Theme ---
+document.getElementById("year").innerText = new Date().getFullYear();
+
+// --- Initialization & LocalStorage ---
 let currentLang = 'en';
 
+window.addEventListener('DOMContentLoaded', () => {
+  if(localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light-mode");
+    updateThemeIcon(true);
+  }
+  
+  if(localStorage.getItem("lang")) {
+    currentLang = localStorage.getItem("lang");
+    applyLanguage();
+  }
+});
+
+// --- Translations & Theme ---
 const translations = {
   en: {
-    mainTitle: "UPI QR Extractor",
-    subTitle: "Scan, extract, or create UPI codes instantly.",
+    mainTitle: "UPI QR Extractor", subTitle: "Scan, extract, or create UPI codes instantly.",
     tabScan: "Scan", tabUpload: "Upload", tabGenerate: "Create",
-    btnStartCam: "Start Camera", btnStopCam: "Stop Camera",
-    scanHint: "Align QR inside the box",
-    extractTitle: "Scanned Successfully",
-    lblUpi: "UPI ID", lblMerchant: "Merchant / Payee Name", lblAmount: "Amount",
-    btnCopy: "Copy ID", btnPay: "Pay Now", btnGenQR: "Generate QR",
-    btnDownload: "Download", btnShareGen: "Share",
+    txtStartCam: "Start Camera", txtStopCam: "Stop Camera", scanHint: "Align QR inside the box",
+    extractTitle: "Scanned Successfully", lblUpi: "UPI ID", lblMerchant: "Merchant / Payee Name", lblAmount: "Amount",
+    txtCopy: "Copy ID", txtPay: "Pay Now", txtGenQR: "Generate QR",
+    txtDownload: "Download", txtShareGen: "Share", uploadLabel: "Select QR Image",
     trustText: "100% Secure. Runs locally in your browser."
   },
   hi: {
-    mainTitle: "यूपीआई क्यूआर स्कैनर",
-    subTitle: "तुरंत यूपीआई कोड स्कैन करें, निकालें या बनाएं।",
+    mainTitle: "यूपीआई क्यूआर स्कैनर", subTitle: "तुरंत यूपीआई कोड स्कैन करें, निकालें या बनाएं।",
     tabScan: "स्कैन", tabUpload: "अपलोड", tabGenerate: "बनाएं",
-    btnStartCam: "कैमरा चालू करें", btnStopCam: "कैमरा बंद करें",
-    scanHint: "क्यूआर को बॉक्स के अंदर रखें",
-    extractTitle: "सफलतापूर्वक स्कैन किया गया",
-    lblUpi: "यूपीआई आईडी", lblMerchant: "व्यापारी का नाम", lblAmount: "रकम",
-    btnCopy: "कॉपी करें", btnPay: "भुगतान करें", btnGenQR: "क्यूआर बनाएं",
-    btnDownload: "डाउनलोड", btnShareGen: "साझा करें",
+    txtStartCam: "कैमरा चालू करें", txtStopCam: "कैमरा बंद करें", scanHint: "क्यूआर को बॉक्स के अंदर रखें",
+    extractTitle: "सफलतापूर्वक स्कैन किया गया", lblUpi: "यूपीआई आईडी", lblMerchant: "व्यापारी का नाम", lblAmount: "रकम",
+    txtCopy: "कॉपी करें", txtPay: "भुगतान करें", txtGenQR: "क्यूआर बनाएं",
+    txtDownload: "डाउनलोड", txtShareGen: "साझा करें", uploadLabel: "क्यूआर छवि चुनें",
     trustText: "100% सुरक्षित। आपके ब्राउज़र में चलता है।"
   }
 };
 
 function toggleLang() {
   currentLang = currentLang === 'en' ? 'hi' : 'en';
+  localStorage.setItem("lang", currentLang);
+  applyLanguage();
+}
+
+function applyLanguage() {
   document.getElementById('langBtn').innerText = currentLang === 'en' ? 'EN | हिंदी' : 'हिंदी | EN';
   const t = translations[currentLang];
-  
   Object.keys(t).forEach(id => {
     const el = document.getElementById(id);
-    if(el) {
-      if(el.childNodes.length > 1) { // Preserve SVGs in buttons
-        el.lastChild.nodeValue = " " + t[id];
-      } else {
-        el.innerText = t[id];
-      }
-    }
+    if(el) el.innerText = t[id];
   });
+}
+
+function updateThemeIcon(isLight) {
+  const icon = isLight ? '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>' : '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+  document.getElementById("themeBtn").innerHTML = `<svg class="icon" viewBox="0 0 24 24">${icon}</svg> ${isLight ? 'Dark' : 'Light'}`;
 }
 
 function toggleTheme() {
   document.body.classList.toggle("light-mode");
   const isLight = document.body.classList.contains("light-mode");
-  const icon = isLight ? '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>' : '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
-  document.getElementById("themeBtn").innerHTML = `<svg class="icon" viewBox="0 0 24 24">${icon}</svg> ${isLight ? 'Dark' : 'Light'}`;
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+  updateThemeIcon(isLight);
 }
 
+// --- Professional Reflow Message Animation ---
 function showMessage(text, type) {
   const msg = document.getElementById("msg");
   msg.innerText = text;
   msg.className = "message " + type;
   msg.style.display = "block";
-  setTimeout(()=> { msg.style.animation = "fadeInUp 0.3s reverse"; setTimeout(()=>msg.style.display="none", 300); }, 3000);
+
+  msg.style.animation = "none";
+  msg.offsetHeight; // force reflow
+  msg.style.animation = "fadeInUp 0.3s ease";
+
+  clearTimeout(msg.hideTimeout);
+  msg.hideTimeout = setTimeout(() => {
+    msg.style.display = "none";
+  }, 3000);
 }
 
 // --- Context Aware Tab Switching ---
@@ -350,12 +388,8 @@ function switchTab(tabId, btnElement) {
   document.getElementById(tabId).classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   btnElement.classList.add('active');
-
-  document.getElementById("extractedCard").classList.add("hidden"); // Reset state
-  
-  if (tabId === 'generate' || tabId === 'upload') {
-    stopScanner();
-  }
+  document.getElementById("extractedCard").classList.add("hidden");
+  if (tabId === 'generate' || tabId === 'upload') stopScanner();
 }
 
 // --- Live Regex Validation ---
@@ -363,13 +397,9 @@ const upiRegex = /^[\w.-]+@[\w.-]+$/;
 function validateUpiLive() {
   const input = document.getElementById("newUpiId");
   const val = input.value.trim();
-  if(val.length === 0) {
-    input.classList.remove("valid", "invalid");
-  } else if(upiRegex.test(val)) {
-    input.classList.add("valid"); input.classList.remove("invalid");
-  } else {
-    input.classList.add("invalid"); input.classList.remove("valid");
-  }
+  if(val.length === 0) { input.classList.remove("valid", "invalid"); } 
+  else if(upiRegex.test(val)) { input.classList.add("valid"); input.classList.remove("invalid"); } 
+  else { input.classList.add("invalid"); input.classList.remove("valid"); }
 }
 
 // --- Scanner Logic ---
@@ -378,9 +408,7 @@ let isScanning = false;
 let generatedBlob = null;
 let rawAmountVal = "";
 
-function initScanner() {
-  if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-}
+function initScanner() { if (!html5QrCode) html5QrCode = new Html5Qrcode("reader"); }
 
 function startScanner() {
   initScanner();
@@ -392,7 +420,6 @@ function startScanner() {
     (decodedText) => {
       extractUPI(decodedText);
       stopScanner();
-      // Add haptic feedback if supported
       if(navigator.vibrate) navigator.vibrate(200);
     },
     (errorMessage) => {}
@@ -402,7 +429,10 @@ function startScanner() {
     document.getElementById("btnStartCam").classList.add("hidden");
     document.getElementById("btnStopCam").classList.remove("hidden");
   }).catch(err => {
-    showMessage(currentLang === 'en' ? "Camera permission denied." : "कैमरा अनुमति अस्वीकृत।", "error");
+    // Upgraded UX for Permission Denial
+    showMessage(currentLang === 'en' ? "Camera access denied. Please allow permission." : "कैमरा अनुमति अस्वीकृत। अनुमति दें।", "error");
+    document.getElementById("scannerWrapper").classList.add("hidden");
+    document.getElementById("btnStartCam").classList.remove("hidden");
   });
 }
 
@@ -429,7 +459,6 @@ function extractUPI(text) {
   const mName = url.searchParams.get("pn") || "N/A";
   rawAmountVal = url.searchParams.get("am") || "";
 
-  // Populate read-only divs
   document.getElementById("valUpiId").innerText = upiId;
   document.getElementById("valMerchant").innerText = mName;
   document.getElementById("valAmount").innerText = rawAmountVal ? `₹ ${rawAmountVal}` : "Not Specified";
@@ -462,7 +491,7 @@ function openUPI() {
   const pn = document.getElementById("valMerchant").innerText;
   let link = `upi://pay?pa=${pa}&pn=${pn}&cu=INR`;
   if (rawAmountVal) link += `&am=${rawAmountVal}`;
-  window.location.href = link;
+  window.open(link, "_self"); // Better Android deep linking compatibility
 }
 
 async function shareUPI(source) {
@@ -502,6 +531,9 @@ function generateQR() {
     document.getElementById("generatedQR").appendChild(canvas);
     document.getElementById("generatedQR").classList.remove("hidden");
     document.getElementById("genActions").classList.remove("hidden");
+    
+    // Auto Scroll After Generate
+    document.getElementById("generatedQR").scrollIntoView({ behavior: "smooth", block: "nearest" });
     
     canvas.toBlob((blob) => { generatedBlob = blob; }, "image/png");
   });
