@@ -7,6 +7,7 @@
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
 :root {
@@ -37,7 +38,6 @@ body.light-mode {
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-/* Smooth Page Load Animation */
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -53,26 +53,14 @@ body {
   animation: pageLoad 0.6s ease forwards;
 }
 
-@keyframes pageLoad {
-  to { opacity: 1; }
-}
+@keyframes pageLoad { to { opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .container { width: 100%; max-width: 600px; padding-bottom: 20px; flex: 1; }
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .animate-fade { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
 .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-
-.toggle-btn {
-  background: var(--glass); color: var(--text); border: 1px solid var(--card-border);
-  padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.3s ease;
-  font-weight: 500; display: flex; align-items: center; gap: 6px;
-}
+.toggle-btn { background: var(--glass); color: var(--text); border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.3s ease; font-weight: 500; display: flex; align-items: center; gap: 6px; }
 .toggle-btn:hover { background: var(--card); }
 
 .hero-text { text-align: center; margin-bottom: 24px; }
@@ -80,27 +68,13 @@ h1 { margin: 0 0 8px 0; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.
 .subtitle { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
 
 .tabs { display: flex; justify-content: center; margin-bottom: 24px; background: var(--input-bg); padding: 4px; border-radius: 30px; }
-.tab-btn {
-  flex: 1; padding: 12px 20px; border-radius: 26px; border: none; cursor: pointer;
-  background: transparent; color: var(--text-muted); transition: all 0.3s ease;
-  font-weight: 600; font-size: 0.95rem;
-}
+.tab-btn { flex: 1; padding: 12px 20px; border-radius: 26px; border: none; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.3s ease; font-weight: 600; font-size: 0.95rem; }
 .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3); }
 
-/* Glass Hover Effect on Cards */
-.card {
-  background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--card-border); border-radius: 20px;
-  padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+.card { background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08); }
 
-input {
-  width: 100%; padding: 14px 16px; margin: 8px 0 16px; border-radius: 12px;
-  border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text);
-  font-size: 1rem; transition: all 0.3s ease; outline: none;
-}
+input { width: 100%; padding: 14px 16px; margin: 8px 0 16px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text); font-size: 1rem; transition: all 0.3s ease; outline: none; }
 input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15); }
 input.valid { border-color: var(--secondary); }
 input.invalid { border-color: var(--danger); }
@@ -110,20 +84,9 @@ input.invalid { border-color: var(--danger); }
 .detail-value { background: var(--input-bg); padding: 14px 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 500; border: 1px solid var(--card-border); word-break: break-all; }
 
 .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
-
-/* Micro UX: Ripple Effect & Fixed Transition */
-button.action-btn {
-  padding: 14px 20px; border-radius: 14px; border: none; cursor: pointer;
-  font-weight: 600; font-size: 1rem; transition: all 0.2s ease; flex: 1; min-width: 130px;
-  display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px;
-  position: relative; overflow: hidden;
-}
+button.action-btn { padding: 14px 20px; border-radius: 14px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s ease; flex: 1; min-width: 130px; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; position: relative; overflow: hidden; }
 button.action-btn:active { transform: scale(0.97); }
-button.action-btn::after {
-  content: ""; position: absolute; top: 50%; left: 50%; width: 0; height: 0;
-  background: rgba(255,255,255,0.3); border-radius: 50%; transform: translate(-50%, -50%);
-  pointer-events: none; transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease; opacity: 1;
-}
+button.action-btn::after { content: ""; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255,255,255,0.3); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease; opacity: 1; }
 button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 
 .btn-primary { background: var(--primary); color: white; }
@@ -135,32 +98,40 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 
 .scanner-container { position: relative; border-radius: 16px; overflow: hidden; background: #000; margin-bottom: 16px; }
 #reader { width: 100%; border: none; }
-.scan-overlay {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;
-  display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 10;
-}
-/* Razorpay-style Scanner Glow */
-.scan-box {
-  width: 200px; height: 200px; border-radius: 16px; position: relative;
-  border: 2px solid var(--secondary);
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 0 4000px rgba(0,0,0,0.5);
-}
-.scan-laser {
-  width: 100%; height: 2px; background: var(--secondary); box-shadow: 0 0 10px var(--secondary);
-  position: absolute; top: 0; animation: scan 2s infinite linear;
-}
-@keyframes scan {
-  0% { top: 0; opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
-}
+.scan-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 10; }
+.scan-box { width: 200px; height: 200px; border-radius: 16px; position: relative; border: 2px solid var(--secondary); box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 0 4000px rgba(0,0,0,0.5); }
+.scan-laser { width: 100%; height: 2px; background: var(--secondary); box-shadow: 0 0 10px var(--secondary); position: absolute; top: 0; animation: scan 2s infinite linear; }
+@keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 .scan-hint { color: white; margin-top: 20px; font-size: 0.9rem; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 11; }
 
 #generatePlaceholder { padding: 40px 20px; border: 2px dashed var(--card-border); border-radius: 16px; margin: 20px 0; color: var(--text-muted); text-align: center; }
-#generatedQR { margin-top: 20px; display: flex; justify-content: center; }
-/* Creates a sleek, shadow-lifted frame for the modern QR */
-#generatedQR canvas { border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); overflow: hidden; background: white; }
+
+/* --- THE NEW MERCHANT STANDEE CARD --- */
+.qr-standee-wrapper {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 320px;
+  margin: 20px auto;
+  color: #0F172A;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+  font-family: 'Inter', sans-serif;
+  border: 1px solid #E2E8F0;
+}
+.qr-standee-header { text-align: center; margin-bottom: 16px; }
+.qr-standee-header h3 { margin: 0; font-size: 1.25rem; color: #0F172A; font-weight: 700; word-break: break-word; }
+.qr-standee-header p { margin: 4px 0 0 0; color: #64748B; font-size: 0.9rem; font-weight: 500; }
+.qr-standee-amount { color: #10B981; font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
+
+#cardQrCode { display: flex; justify-content: center; background: #FFFFFF; border-radius: 12px; padding: 10px; border: 2px solid #F1F5F9; }
+#cardQrCode canvas { max-width: 100%; height: auto !important; }
+
+.qr-standee-footer { text-align: center; margin-top: 20px; border-top: 2px dashed #E2E8F0; padding-top: 16px; }
+.upi-apps { display: block; font-size: 0.75rem; color: #64748B; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.5px; }
+.powered-by { font-size: 1rem; color: #0F172A; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.powered-by span { background: #0F172A; color: #FFFFFF; padding: 2px 8px; border-radius: 6px; font-weight: 800; font-style: italic; font-size: 0.9rem; }
+/* -------------------------------------- */
 
 .trust-badge { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; }
 .trust-badge svg { width: 16px; height: 16px; fill: currentColor; }
@@ -172,10 +143,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 .hidden { display: none !important; }
 .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-@media (max-width: 480px) {
-  .tabs { flex-direction: row; }
-  .btn-group { flex-direction: column; }
-}
+@media (max-width: 480px) { .tabs { flex-direction: row; } .btn-group { flex-direction: column; } }
 </style>
 </head>
 <body>
@@ -246,43 +214,41 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
     </button>
     
     <div id="generatePlaceholder">Your QR will appear here</div>
-    <div id="generatedQR" class="hidden"></div>
+    
+    <div id="qrStandee" class="qr-standee-wrapper hidden">
+      <div class="qr-standee-header">
+        <h3 id="standeeName">UPI Payment</h3>
+        <p id="txtScanToPay">Scan and Pay</p>
+        <div id="standeeAmount" class="qr-standee-amount"></div>
+      </div>
+      
+      <div id="cardQrCode"></div>
+      
+      <div class="qr-standee-footer">
+        <span class="upi-apps">GPay • PhonePe • Paytm • BHIM</span>
+        <div class="powered-by">Powered by <span>UPI</span></div>
+      </div>
+    </div>
     
     <div class="btn-group hidden" id="genActions">
-      <button class="action-btn btn-success" id="btnDownload" onclick="downloadQR()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> <span id="txtDownload">Download</span>
+      <button class="action-btn btn-success" id="btnDownload" onclick="downloadStandee()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> <span id="txtDownload">Download Card</span>
       </button>
-      <button class="action-btn btn-info" id="btnShareGen" onclick="shareUPI('generate')">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg> <span id="txtShareGen">Share</span>
+      <button class="action-btn btn-info" id="btnShareGen" onclick="shareStandee()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg> <span id="txtShareGen">Share Card</span>
       </button>
     </div>
   </div>
 
   <div class="card hidden animate-fade" id="extractedCard">
     <h3 id="extractTitle" style="margin-top: 0; color: var(--secondary); text-align: center;">Scanned Successfully</h3>
-    
-    <div class="detail-group">
-      <span class="detail-label" id="lblUpi">UPI ID</span>
-      <div class="detail-value" id="valUpiId">-</div>
-    </div>
-    
-    <div class="detail-group">
-      <span class="detail-label" id="lblMerchant">Merchant / Payee Name</span>
-      <div class="detail-value" id="valMerchant">-</div>
-    </div>
-    
-    <div class="detail-group">
-      <span class="detail-label" id="lblAmount">Amount</span>
-      <div class="detail-value" id="valAmount" style="color: var(--secondary); font-size: 1.2rem; font-weight: 700;">-</div>
-    </div>
+    <div class="detail-group"><span class="detail-label" id="lblUpi">UPI ID</span><div class="detail-value" id="valUpiId">-</div></div>
+    <div class="detail-group"><span class="detail-label" id="lblMerchant">Merchant / Payee Name</span><div class="detail-value" id="valMerchant">-</div></div>
+    <div class="detail-group"><span class="detail-label" id="lblAmount">Amount</span><div class="detail-value" id="valAmount" style="color: var(--secondary); font-size: 1.2rem; font-weight: 700;">-</div></div>
     
     <div class="btn-group">
-      <button class="action-btn btn-primary" id="btnCopy" onclick="copyUPI()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> <span id="txtCopy">Copy ID</span>
-      </button>
-      <button class="action-btn btn-success" id="btnPay" onclick="openUPI()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg> <span id="txtPay">Pay Now</span>
-      </button>
+      <button class="action-btn btn-primary" id="btnCopy" onclick="copyUPI()"><svg class="icon" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> <span id="txtCopy">Copy ID</span></button>
+      <button class="action-btn btn-success" id="btnPay" onclick="openUPI()"><svg class="icon" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg> <span id="txtPay">Pay Now</span></button>
     </div>
   </div>
 
@@ -296,7 +262,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> Made with ❤️ by <strong>one</strong>
+  © <span id="year"></span> Made with ❤️ by <strong>two</strong>
 </footer>
 
 <script>
@@ -310,7 +276,6 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add("light-mode");
     updateThemeIcon(true);
   }
-  
   if(localStorage.getItem("lang")) {
     currentLang = localStorage.getItem("lang");
     applyLanguage();
@@ -325,8 +290,8 @@ const translations = {
     txtStartCam: "Start Camera", txtStopCam: "Stop Camera", scanHint: "Align QR inside the box",
     extractTitle: "Scanned Successfully", lblUpi: "UPI ID", lblMerchant: "Merchant / Payee Name", lblAmount: "Amount",
     txtCopy: "Copy ID", txtPay: "Pay Now", txtGenQR: "Generate QR",
-    txtDownload: "Download", txtShareGen: "Share", uploadLabel: "Select QR Image",
-    trustText: "100% Secure. Runs locally in your browser."
+    txtDownload: "Download Card", txtShareGen: "Share Card", uploadLabel: "Select QR Image",
+    txtScanToPay: "Scan and Pay", trustText: "100% Secure. Runs locally in your browser."
   },
   hi: {
     mainTitle: "यूपीआई क्यूआर स्कैनर", subTitle: "तुरंत यूपीआई कोड स्कैन करें, निकालें या बनाएं।",
@@ -334,8 +299,8 @@ const translations = {
     txtStartCam: "कैमरा चालू करें", txtStopCam: "कैमरा बंद करें", scanHint: "क्यूआर को बॉक्स के अंदर रखें",
     extractTitle: "सफलतापूर्वक स्कैन किया गया", lblUpi: "यूपीआई आईडी", lblMerchant: "व्यापारी का नाम", lblAmount: "रकम",
     txtCopy: "कॉपी करें", txtPay: "भुगतान करें", txtGenQR: "क्यूआर बनाएं",
-    txtDownload: "डाउनलोड", txtShareGen: "साझा करें", uploadLabel: "क्यूआर छवि चुनें",
-    trustText: "100% सुरक्षित। आपके ब्राउज़र में चलता है।"
+    txtDownload: "कार्ड डाउनलोड करें", txtShareGen: "कार्ड साझा करें", uploadLabel: "क्यूआर छवि चुनें",
+    txtScanToPay: "भुगतान करने के लिए स्कैन करें", trustText: "100% सुरक्षित। आपके ब्राउज़र में चलता है।"
   }
 };
 
@@ -366,13 +331,11 @@ function toggleTheme() {
   updateThemeIcon(isLight);
 }
 
-// --- Professional Reflow Message Animation ---
 function showMessage(text, type) {
   const msg = document.getElementById("msg");
   msg.innerText = text;
   msg.className = "message " + type;
   msg.style.display = "block";
-
   msg.style.animation = "none";
   msg.offsetHeight; // force reflow
   msg.style.animation = "fadeInUp 0.3s ease";
@@ -384,7 +347,6 @@ function showMessage(text, type) {
   }, 3000);
 }
 
-// --- Context Aware Tab Switching ---
 function switchTab(tabId, btnElement) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
   document.getElementById(tabId).classList.remove('hidden');
@@ -394,7 +356,6 @@ function switchTab(tabId, btnElement) {
   if (tabId === 'generate' || tabId === 'upload') stopScanner();
 }
 
-// --- Live Regex Validation ---
 const upiRegex = /^[\w.-]+@[\w.-]+$/;
 function validateUpiLive() {
   const input = document.getElementById("newUpiId");
@@ -407,7 +368,6 @@ function validateUpiLive() {
 // --- Scanner Logic ---
 let html5QrCode;
 let isScanning = false;
-let generatedBlob = null;
 let rawAmountVal = "";
 
 function initScanner() { if (!html5QrCode) html5QrCode = new Html5Qrcode("reader"); }
@@ -419,11 +379,7 @@ function startScanner() {
   html5QrCode.start(
     { facingMode: "environment" }, 
     { fps: 10, qrbox: { width: 250, height: 250 } },
-    (decodedText) => {
-      extractUPI(decodedText);
-      stopScanner();
-      if(navigator.vibrate) navigator.vibrate(200);
-    },
+    (decodedText) => { extractUPI(decodedText); stopScanner(); if(navigator.vibrate) navigator.vibrate(200); },
     (errorMessage) => {}
   ).then(() => {
     isScanning = true;
@@ -439,22 +395,12 @@ function startScanner() {
 
 async function stopScanner() {
   if (html5QrCode && isScanning) {
-    try {
-      await html5QrCode.stop();
-      isScanning = false;
-      document.getElementById("scannerWrapper").classList.add("hidden");
-      document.getElementById("btnStartCam").classList.remove("hidden");
-      document.getElementById("btnStopCam").classList.add("hidden");
-    } catch(err) {}
+    try { await html5QrCode.stop(); isScanning = false; document.getElementById("scannerWrapper").classList.add("hidden"); document.getElementById("btnStartCam").classList.remove("hidden"); document.getElementById("btnStopCam").classList.add("hidden"); } catch(err) {}
   }
 }
 
-// --- Data Extraction & UI Update ---
 function extractUPI(text) {
-  if (!text.startsWith("upi://pay")) {
-    showMessage(currentLang === 'en' ? "Invalid UPI QR Code" : "अमान्य यूपीआई क्यूआर", "error");
-    return;
-  }
+  if (!text.startsWith("upi://pay")) { showMessage(currentLang === 'en' ? "Invalid UPI QR Code" : "अमान्य यूपीआई क्यूआर", "error"); return; }
   const url = new URL(text);
   const upiId = url.searchParams.get("pa") || "N/A";
   const mName = url.searchParams.get("pn") || "N/A";
@@ -473,18 +419,13 @@ document.getElementById("qrFile").addEventListener("change", function(e) {
   if(!file) return;
   document.getElementById("extractedCard").classList.add("hidden");
   initScanner();
-  html5QrCode.scanFile(file, true)
-    .then(decodedText => extractUPI(decodedText))
-    .catch(() => showMessage(currentLang === 'en' ? "Cannot read QR" : "क्यूआर नहीं पढ़ सकते", "error"));
+  html5QrCode.scanFile(file, true).then(decodedText => extractUPI(decodedText)).catch(() => showMessage(currentLang === 'en' ? "Cannot read QR" : "क्यूआर नहीं पढ़ सकते", "error"));
 });
 
-// --- Action Buttons ---
 function copyUPI() {
   const upiId = document.getElementById("valUpiId").innerText;
   if(upiId === "N/A") return;
-  navigator.clipboard.writeText(upiId).then(() => {
-    showMessage(currentLang === 'en' ? "UPI ID Copied!" : "UPI ID कॉपी किया गया!", "success");
-  });
+  navigator.clipboard.writeText(upiId).then(() => { showMessage(currentLang === 'en' ? "UPI ID Copied!" : "UPI ID कॉपी किया गया!", "success"); });
 }
 
 function openUPI() {
@@ -495,23 +436,7 @@ function openUPI() {
   window.open(link, "_self"); 
 }
 
-async function shareUPI(source) {
-  if (!navigator.share) return showMessage("Sharing not supported.", "error");
-  try {
-    if (source === 'generate' && generatedBlob) {
-      const file = new File([generatedBlob], "UPI-QR.png", { type: "image/png" });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ title: 'Scan to Pay', files: [file] });
-      } else {
-        await navigator.share({ title: 'UPI ID', text: document.getElementById("newUpiId").value });
-      }
-    }
-  } catch (err) {}
-}
-
-// --- Generation (GPay Style: High-Contrast, Scannable) ---
-let qrCodeInstance = null;
-
+// --- Generation (Merchant Standee Style) ---
 function generateQR() {
   const pa = document.getElementById("newUpiId").value.trim().toLowerCase();
   const pn = document.getElementById("newName").value.trim();
@@ -519,77 +444,86 @@ function generateQR() {
   
   if (!upiRegex.test(pa)) { 
     showMessage(currentLang === 'en' ? "Enter a valid UPI ID" : "मान्य यूपीआई आईडी दर्ज करें", "error"); 
-    document.getElementById("newUpiId").classList.add("invalid");
-    return; 
+    document.getElementById("newUpiId").classList.add("invalid"); return; 
   }
 
   let upiString = `upi://pay?pa=${pa}&pn=${pn}&cu=INR`;
   if (am) upiString += `&am=${am}`;
 
-  document.getElementById("generatedQR").innerHTML = "";
+  document.getElementById("cardQrCode").innerHTML = "";
   document.getElementById("generatePlaceholder").classList.add("hidden");
 
-  // YOUR LOCAL FILE PATH GOES HERE
-  const upiLogo = "./upi-logo.png"; 
+  // Update Standee Header text
+  document.getElementById("standeeName").innerText = pn ? pn : (currentLang === 'en' ? "UPI Payment" : "यूपीआई भुगतान");
+  document.getElementById("standeeAmount").innerText = am ? `₹ ${am}` : "";
 
-  // Strict, Scannable GPay-Style QR Code
-  qrCodeInstance = new QRCodeStyling({
-    width: 260,
-    height: 260,
+  // Pure, Untouched, Highly Scannable Base QR Code
+  const qrCodeInstance = new QRCodeStyling({
+    width: 240,
+    height: 240,
     type: "canvas",
     data: upiString,
-    image: upiLogo, 
-    
-    // Level H (High) is MANDATORY when using a wide center logo
-    qrOptions: {
-        errorCorrectionLevel: 'H' 
-    },
-    
-    // Pure Black & White standard squares for maximum scannability
-    dotsOptions: {
-        color: "#000000", 
-        type: "square"   
-    },
-    backgroundOptions: {
-        color: "#FFFFFF", 
-    },
-    
-    // GPay Style Logo constraints
-    imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 4,                // Solid white box padding around logo
-        imageSize: 0.4,           // Max safe width for a wide logo (40%)
-        hideBackgroundDots: true  // Deletes dots behind the logo to prevent scan errors
-    },
-    
-    // Standard Black Eyes
-    cornersSquareOptions: {
-        type: "square",
-        color: "#000000" 
-    },
-    cornersDotOptions: {
-        type: "square",
-        color: "#000000" 
-    }
+    qrOptions: { errorCorrectionLevel: 'M' }, // Medium error correction = faster scanning
+    dotsOptions: { color: "#000000", type: "square" },
+    backgroundOptions: { color: "#FFFFFF" }
   });
 
-  qrCodeInstance.append(document.getElementById("generatedQR"));
-  document.getElementById("generatedQR").classList.remove("hidden");
+  qrCodeInstance.append(document.getElementById("cardQrCode"));
+  
+  // Show the complete Standee Card
+  document.getElementById("qrStandee").classList.remove("hidden");
   document.getElementById("genActions").classList.remove("hidden");
   
-  // Auto Scroll After Generate
-  document.getElementById("generatedQR").scrollIntoView({ behavior: "smooth", block: "nearest" });
-  
-  // Extract Blob for the "Share" button
-  qrCodeInstance.getRawData("png").then((blob) => { generatedBlob = blob; });
-  
-  showMessage(currentLang === 'en' ? "QR Created!" : "क्यूआर बनाया गया!", "success");
+  document.getElementById("qrStandee").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  showMessage(currentLang === 'en' ? "Card Created!" : "कार्ड बनाया गया!", "success");
 }
 
-function downloadQR() {
-  if (qrCodeInstance) {
-    qrCodeInstance.download({ name: "My-UPI-QR", extension: "png" });
+// --- High-Resolution Export Engine ---
+async function getCardBlob() {
+  const cardElement = document.getElementById("qrStandee");
+  // html2canvas takes a snapshot of the styled HTML div and turns it into an image
+  const canvas = await html2canvas(cardElement, { 
+    scale: 3, // Multiplies resolution by 3 for crisp printing/sharing
+    backgroundColor: "#FFFFFF",
+    logging: false
+  });
+  
+  return new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+}
+
+async function downloadStandee() {
+  const btn = document.getElementById("btnDownload");
+  btn.disabled = true; // Prevent double clicks
+  try {
+    const blob = await getCardBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'My-Merchant-Card.png';
+    link.click();
+    URL.revokeObjectURL(url);
+  } catch(err) {
+    showMessage("Download failed.", "error");
   }
+  btn.disabled = false;
+}
+
+async function shareStandee() {
+  if (!navigator.share) return showMessage(currentLang === 'en' ? "Sharing not supported." : "साझाकरण समर्थित नहीं है।", "error");
+  
+  const btn = document.getElementById("btnShareGen");
+  btn.disabled = true;
+  try {
+    const blob = await getCardBlob();
+    const file = new File([blob], "Merchant-Card.png", { type: "image/png" });
+    
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ title: 'Scan to Pay', files: [file] });
+    } else {
+      await navigator.share({ title: 'UPI ID', text: document.getElementById("newUpiId").value });
+    }
+  } catch (err) {}
+  btn.disabled = false;
 }
 </script>
 
