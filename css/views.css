@@ -1,0 +1,365 @@
+/* ============================================================
+   views.css — Per-view styles
+   (Home, Tools/Scanner, Standee, Extracted Card, About)
+   UPInspect v2.0
+   ============================================================ */
+
+/* ─── Home View ─── */
+.hero {
+  padding: 8px 0 32px;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-accent);
+}
+
+.hero h2 {
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  font-weight: 700;
+  margin: 0 0 12px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+.hero h2 .line2 { color: var(--accent); }
+
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  max-width: 380px;
+  margin: 0 auto 32px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.22s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover shimmer */
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent-dim), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.feature-card:hover::before,
+.feature-card:active::before { opacity: 1; }
+.feature-card:active { transform: scale(0.97); }
+
+.feature-card svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  margin-bottom: 10px;
+}
+
+.feature-card h4 {
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Trust card */
+.trust-card {
+  background: var(--surface);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.trust-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: var(--accent-dim);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trust-card h3 {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.trust-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ─── Scanner ─── */
+.scanner-wrap {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+  margin-bottom: 14px;
+  width: 100%;
+  min-height: 260px;
+}
+
+#reader { width: 100%; border: none !important; }
+#reader video { object-fit: cover; border-radius: var(--radius); }
+
+.scan-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.scan-box {
+  width: 68%;
+  max-width: 240px;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.55), 0 0 20px rgba(0, 229, 160, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Scanning laser */
+.scan-laser {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  box-shadow: 0 0 8px var(--accent);
+  position: absolute;
+  top: 0;
+  animation: laserMove 2.2s infinite linear;
+}
+
+/* Corner brackets */
+.scan-box::before,
+.scan-box::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--accent);
+  border-style: solid;
+}
+
+.scan-box::before {
+  top: 0; left: 0;
+  border-width: 3px 0 0 3px;
+  border-radius: 4px 0 0 0;
+}
+
+.scan-box::after {
+  bottom: 0; right: 0;
+  border-width: 0 3px 3px 0;
+  border-radius: 0 0 4px 0;
+}
+
+/* ─── Extracted Card ─── */
+.extracted-card {
+  background: var(--surface);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 16px;
+  animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.verify-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.verify-badge svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.verify-badge span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ─── QR Standee ─── */
+.standee-outer {
+  margin: 18px auto 0;
+  max-width: 300px;
+  animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.qr-standee {
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 20px 18px;
+  border: 2px solid #E8F0FF;
+  color: #0A1628;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.standee-logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  opacity: 0.6;
+}
+
+.standee-logo-row span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #0A2463;
+}
+
+.standee-name   { font-weight: 800; font-size: 1.2rem; color: #0A2463; margin: 0 0 2px; }
+.standee-upi    { font-family: 'Space Mono', monospace; font-size: 0.78rem; color: #4A6080; margin: 0 0 2px; }
+.standee-amount { font-weight: 800; font-size: 1.1rem; color: #00A070; margin: 0 0 14px; }
+
+#cardQrCode {
+  display: flex;
+  justify-content: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.standee-scan-hint {
+  font-size: 0.72rem;
+  color: #8AA0C0;
+  margin-top: 10px;
+  letter-spacing: 0.3px;
+}
+
+/* ─── About View ─── */
+.about-hero {
+  text-align: center;
+  padding: 16px 0 24px;
+}
+
+.about-hero h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.about-hero p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.pledge-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pledge-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.pledge-list li:last-child { border: none; }
+
+.pledge-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  background: var(--accent-dim);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pledge-icon svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
