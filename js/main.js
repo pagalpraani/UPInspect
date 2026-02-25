@@ -15,11 +15,8 @@ import { copyUPI, openUPI,
 import { validateUpiLive, generateQRCard,
          generateLink, resetCreateForm }  from './generator.js';
 import { downloadStandee, shareStandee } from './share.js';
-import { showPayLinkSections,
-         plStartScanner, plStopScanner, plInitFileUpload,
-         plCopyUPI, plOpenUPI,
-         plValidateUpiLive, plGenerateQRCard, plGenerateLink,
-         plDownloadStandee, plShareStandee }  from './paylink.js';
+import { showPayLinkButtons,
+         plGoScan, plGoCreate }           from './paylink.js';
 
 // ─── Boot ──────────────────────────────────────────────────
 
@@ -40,13 +37,16 @@ window.addEventListener('DOMContentLoaded', () => {
     const pn = params.get('pn') || 'Unknown';
     state.rawAmountVal = am;
 
+    // Show tools view but hide nav & tabs — looks like a standalone page
     switchAppView('tools');
     document.getElementById('toolTabs').classList.add('hidden');
     document.getElementById('bottomNav').classList.add('hidden');
 
+    // Populate the verified card
     renderExtractedCard({ pa, pn, am });
-    showPayLinkSections();
-    plInitFileUpload();
+
+    // Show the two action buttons below the card
+    showPayLinkButtons();
   }
 
   // 3. Apply translations
@@ -95,16 +95,9 @@ function exposeGlobals() {
     downloadStandee,
     shareStandee,
 
-    // Payment-link page extras
-    plStartScanner,
-    plStopScanner,
-    plCopyUPI,
-    plOpenUPI,
-    plValidateUpiLive,
-    plGenerateQRCard,
-    plGenerateLink,
-    plDownloadStandee,
-    plShareStandee,
+    // Payment-link navigation
+    plGoScan,
+    plGoCreate,
   });
 }
 
