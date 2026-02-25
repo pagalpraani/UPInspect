@@ -306,6 +306,42 @@
   letter-spacing: 0.3px;
 }
 
+/* ─── Payment Link Extra Sections ─── */
+.pay-link-section {
+  margin-top: 20px;
+  animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pl-section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  padding: 0 2px;
+}
+
+.pl-section-label svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.pay-link-section + .pay-link-section {
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
 /* ─── About View ─── */
 .about-hero {
   text-align: center;
