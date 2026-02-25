@@ -1,18 +1,16 @@
 // ============================================================
 // paylink.js — Payment-link page extras
 //
-// When the page is opened via a ?pa= URL, two extra buttons
-// appear below the verified card:
-//   · "Scan | Upload QR"     → takes user to the Scan tab
-//   · "Create Your UPI Link" → takes user to the Create tab
-//
-// No duplicate scanner or generator UI — we just navigate to
-// the existing tabs.
+// When the page is opened via a ?pa= URL:
+//  - scanTab and createTab cards are hidden (no duplicate buttons)
+//  - Two action buttons appear below the verified card:
+//      · "Scan | Upload QR"     → reveals scanTab, shows full nav
+//      · "Create Your UPI Link" → reveals createTab, shows full nav
 // ============================================================
 
 import { navToTools } from './router.js';
 
-// ─── Show the two action buttons ───────────────────────────
+// ─── Reveal the two action buttons ─────────────────────────
 
 export function showPayLinkButtons() {
   document.getElementById('plActionButtons').classList.remove('hidden');
@@ -20,16 +18,22 @@ export function showPayLinkButtons() {
 
 // ─── Navigation handlers ───────────────────────────────────
 
-/** "Scan | Upload QR" → reveal full nav + go to Scan tab */
+/** Restore full UI and go to Scan tab */
 export function plGoScan() {
-  document.getElementById('bottomNav').classList.remove('hidden');
-  document.getElementById('toolTabs').classList.remove('hidden');
+  _restoreFullUI();
   navToTools('scanTab');
 }
 
-/** "Create Your UPI Link" → reveal full nav + go to Create tab */
+/** Restore full UI and go to Create tab */
 export function plGoCreate() {
+  _restoreFullUI();
+  navToTools('createTab');
+}
+
+// ─── Internal ──────────────────────────────────────────────
+
+function _restoreFullUI() {
   document.getElementById('bottomNav').classList.remove('hidden');
   document.getElementById('toolTabs').classList.remove('hidden');
-  navToTools('createTab');
+  // tab content visibility is managed by router/switchToolTab
 }
