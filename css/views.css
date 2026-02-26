@@ -255,55 +255,126 @@
 
 /* ─── QR Standee ─── */
 .standee-outer {
-  margin: 18px auto 0;
-  max-width: 300px;
+  margin: 20px auto 0;
+  max-width: 320px;
   animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .qr-standee {
-  background: #fff;
-  border-radius: 20px;
-  padding: 22px 20px 18px;
-  border: 2px solid #E8F0FF;
-  color: #0A1628;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #E2E8F0;
+  color: #0F172A;
+  font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Header */
+.qr-standee-header {
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  margin-bottom: 16px;
 }
 
-.standee-logo-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 14px;
-  opacity: 0.6;
+.qr-standee-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1E3A8A;
+  font-weight: 800;
+  word-break: break-word;
 }
 
-.standee-logo-row span {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
+.qr-standee-upi {
+  margin: 4px 0 0 0;
+  font-family: ui-monospace, 'Space Mono', monospace;
+  font-size: 0.85rem;
+  color: #64748B;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.scan-prompt {
+  margin: 10px 0 0 0;
+  color: #10B981;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #0A2463;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.standee-name   { font-weight: 800; font-size: 1.2rem; color: #0A2463; margin: 0 0 2px; }
-.standee-upi    { font-family: 'Space Mono', monospace; font-size: 0.78rem; color: #4A6080; margin: 0 0 2px; }
-.standee-amount { font-weight: 800; font-size: 1.1rem; color: #00A070; margin: 0 0 14px; }
+.qr-standee-amount {
+  color: #0F172A;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-top: 4px;
+}
 
+/* QR code area */
 #cardQrCode {
   display: flex;
   justify-content: center;
-  background: #fff;
-  border-radius: 10px;
-  padding: 8px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 10px;
+  border: 2px solid #F1F5F9;
 }
 
-.standee-scan-hint {
-  font-size: 0.72rem;
-  color: #8AA0C0;
-  margin-top: 10px;
-  letter-spacing: 0.3px;
+#cardQrCode canvas {
+  max-width: 100%;
+  height: auto !important;
+}
+
+/* Footer */
+.qr-standee-footer {
+  text-align: center;
+  margin-top: 20px;
+  border-top: 2px dashed #E2E8F0;
+  padding-top: 16px;
+}
+
+.upi-apps {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748B;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.powered-by {
+  font-size: 0.85rem;
+  color: #0F172A;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.standee-brand-icon {
+  width: 22px;
+  height: 22px;
+  background: #0A2463;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.standee-brand-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.powered-by span {
+  background: #0F172A;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-style: italic;
+  font-size: 0.85rem;
 }
 
 /* ─── Payment Link Action Buttons ─── */
