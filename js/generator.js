@@ -75,12 +75,12 @@ export function generateQRCard() {
   // Clear previous QR and render new one
   $('cardQrCode').innerHTML = '';
   new QRCodeStyling({
-    width:  220,
-    height: 220,
+    width:  240,
+    height: 240,
     type:   'canvas',
     data:   upiString,
     qrOptions:         { errorCorrectionLevel: 'M' },
-    dotsOptions:       { color: '#0A2463', type: 'square' },
+    dotsOptions:       { color: '#000000', type: 'square' },
     backgroundOptions: { color: '#FFFFFF' },
     margin: 0,
   }).append($('cardQrCode'));
