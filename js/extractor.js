@@ -25,7 +25,10 @@ export function renderExtractedCard({ pa, pn, am }) {
 
   const card = $('extractedCard');
   card.classList.remove('hidden');
-  card.scrollIntoView({ behavior: 'smooth' });
+  // Don't scroll on payment-link page — it pushes the nav out of view
+  if (!state.isPaymentLinkMode) {
+    card.scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
 /**
