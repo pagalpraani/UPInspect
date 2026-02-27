@@ -98,9 +98,10 @@ export function generateLink() {
   if (!data) return;
 
   const { pa, pn, am } = data;
-  let url = `${BASE_PAY_URL}?pa=${encodeURIComponent(pa)}`;
-  if (pn) url += `&pn=${encodeURIComponent(pn)}`;
-  if (am) url += `&am=${encodeURIComponent(am)}`;
+  // Clean path format: https://upinspect.pages.dev/pa/pn/am
+  let url = `${BASE_PAY_URL}/${encodeURIComponent(pa)}`;
+  if (pn) url += `/${encodeURIComponent(pn)}`;
+  if (am) url += `/${encodeURIComponent(am)}`;
 
   navigator.clipboard
     .writeText(url)
