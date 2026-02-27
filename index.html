@@ -57,38 +57,63 @@
        ════════════════════ -->
   <section id="viewHome" class="app-view active">
 
+    <!-- Hero -->
     <div class="hero">
-      <div class="hero-eyebrow" id="txtEyebrow">UPI Security Tool</div>
-      <h2>
-        <span id="txtHeroTitle">Decode. Verify.</span><br>
-        <span class="line2" id="txtHeroAccent">Pay with clarity.</span>
-      </h2>
-      <p class="hero-sub" id="txtHeroSub">
-        Extract UPI IDs from any QR code and complete payments with complete
-        transparency. No blind payments.
+      <div class="hero-eyebrow">UPI Security Tool</div>
+      <h2>Scan. Inspect.<br><span class="line2">Then Pay.</span></h2>
+      <p class="hero-sub">
+        UPInspect lets you decode any UPI QR code before you initiate the payment.
       </p>
+      <div class="hero-pills">
+        <span class="hero-pill">No automatic redirects</span>
+        <span class="hero-pill">No rushed confirmations</span>
+        <span class="hero-pill">Just clarity and control</span>
+      </div>
+      <p class="hero-intent">Inspect first. Pay intentionally.</p>
     </div>
 
-    <div class="feature-grid">
-      <div class="feature-card" onclick="navToTools('scanTab')">
+    <!-- CTA Buttons -->
+    <div class="home-cta-group">
+      <button class="home-cta-btn home-cta-primary" onclick="navToTools('scanTab')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M23 7l-7 5 7 5V7z"/>
-          <rect x="1" y="5" width="15" height="14" rx="2"/>
+          <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/>
         </svg>
-        <h4 id="txtGridScan">Scan &amp; Pay</h4>
-        <p  id="txtGridScanSub">Inspect any QR safely</p>
-      </div>
-
-      <div class="feature-card" onclick="navToTools('createTab')">
+        <div>
+          <span class="cta-title">Scan &amp; Pay</span>
+          <span class="cta-sub">Inspect any QR code safely</span>
+        </div>
+      </button>
+      <button class="home-cta-btn home-cta-secondary" onclick="navToTools('createTab')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
           <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
         </svg>
-        <h4 id="txtGridCreate">Create QR &amp; Links</h4>
-        <p  id="txtGridCreateSub">Share payment requests</p>
-      </div>
+        <div>
+          <span class="cta-title">Create Payment Links &amp; QR Codes</span>
+          <span class="cta-sub">Share payment requests</span>
+        </div>
+      </button>
     </div>
 
+    <!-- What You Can Do -->
+    <div class="home-section-card">
+      <h3 class="home-section-title">What You Can Do</h3>
+      <ul class="check-list">
+        <li>Scan or upload any UPI QR code</li>
+        <li>View UPI ID, payee name &amp; requested amount</li>
+        <li>Tap "Pay Now" to continue via your preferred UPI app</li>
+        <li>Copy the UPI ID and pay manually using any UPI-enabled banking app</li>
+        <li>Handle higher-value payments through your bank's standard transfer flow</li>
+        <li>Generate clean, shareable payment links</li>
+        <li>Stay in control of when the payment app opens</li>
+      </ul>
+      <p class="home-note">
+        UPInspect doesn't replace your banking app.<br>
+        <strong>It adds a layer of control before it.</strong>
+      </p>
+    </div>
+
+    <!-- Privacy -->
     <div class="trust-card">
       <div class="trust-icon">
         <svg viewBox="0 0 24 24">
@@ -97,8 +122,8 @@
         </svg>
       </div>
       <div>
-        <h3 id="txtTrustTitle">100% Local &amp; Private</h3>
-        <p  id="txtTrustDesc">UPInspect runs entirely in your browser. Your UPI ID and payment data never touch a server — ever.</p>
+        <h3>100% Local &amp; Private</h3>
+        <p>Runs entirely in your browser. Your UPI ID and payment data never touch a server — ever.</p>
       </div>
     </div>
 
@@ -329,41 +354,99 @@
        ════════════════════ -->
   <section id="viewAbout" class="app-view">
 
+    <!-- About hero -->
     <div class="about-hero">
-      <h2 id="txtAboutTitle">About UPInspect</h2>
-      <p  id="txtAbout1">Built to eliminate blind UPI payments. Always know exactly who you're paying before your banking app takes over.</p>
+      <h2>🛡 About UPInspect</h2>
+      <p>Adding Control to QR-Based Payments</p>
     </div>
 
-    <div class="card">
-      <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.65;margin:0 0 20px;" id="txtAbout2">
-        Merchants can generate clean QR cards and shareable payment links. Users can inspect them safely before paying.
-      </p>
-
-      <h3 style="margin:0 0 12px;font-size:0.95rem;color:var(--text);" id="txtPrivacyTitle">Privacy Pledge</h3>
-
-      <ul class="pledge-list">
-        <li>
-          <div class="pledge-icon">
-            <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-          </div>
-          <span id="txtPledge1">No data is ever sent to a server.</span>
-        </li>
-        <li>
-          <div class="pledge-icon">
-            <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-          </div>
-          <span id="txtPledge2">Works entirely in your browser.</span>
-        </li>
-        <li>
-          <div class="pledge-icon">
-            <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-          </div>
-          <span id="txtPledge3">Zero tracking, open logic.</span>
-        </li>
-      </ul>
+    <!-- Origin story -->
+    <div class="about-block">
+      <p>UPI made payments instant. QR codes made them effortless.</p>
+      <p>But most QR scans immediately trigger a redirect to a payment app.</p>
+      <p>We built UPInspect to introduce one simple step in between:</p>
+      <div class="flow-steps">
+        <span>Scan</span><span class="flow-arrow">→</span>
+        <span>Inspect</span><span class="flow-arrow">→</span>
+        <span>Choose</span><span class="flow-arrow">→</span>
+        <span class="flow-accent">Pay</span>
+      </div>
     </div>
 
-    <div style="text-align:center;padding:12px 0;">
+    <!-- Why -->
+    <div class="about-block">
+      <h3 class="about-block-title">Why We Built This</h3>
+      <p>For everyday small payments, instant QR redirect works fine.</p>
+      <p>For larger transactions, shared QR screenshots, or cautious users — flexibility matters.</p>
+      <p>UPInspect gives you that flexibility.</p>
+    </div>
+
+    <!-- What we do / don't do -->
+    <div class="about-two-col">
+      <div class="about-do-card">
+        <h4 class="about-do-title do-yes">What We Do</h4>
+        <ul class="check-list check-list-sm">
+          <li>Decode UPI QR data without initiating a transaction</li>
+          <li>Display UPI ID, name, and amount</li>
+          <li>Let you choose how to proceed</li>
+          <li>Enable manual payment initiation</li>
+          <li>Generate transparent payment links and QR cards</li>
+        </ul>
+      </div>
+      <div class="about-do-card">
+        <h4 class="about-do-title do-no">What We Don't Do</h4>
+        <ul class="cross-list">
+          <li>Process payments</li>
+          <li>Hold funds</li>
+          <li>Modify transaction limits</li>
+          <li>Replace your bank or UPI app</li>
+        </ul>
+        <p class="about-note">All payments are completed inside official UPI-enabled applications.</p>
+      </div>
+    </div>
+
+    <!-- Vision -->
+    <div class="about-vision">
+      <p>"Digital payments should be fast but never blind."</p>
+      <span>UPInspect adds clarity before money moves.</span>
+    </div>
+
+    <!-- FAQs -->
+    <h3 class="faq-heading">❓ FAQs</h3>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>What does UPInspect actually do?</summary>
+        <p>UPInspect decodes UPI QR codes and displays the embedded payment details before you initiate the transaction. You can then pay via your preferred UPI app, copy the UPI ID to send manually, or generate a clean payment link.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Does UPInspect process payments?</summary>
+        <p>No. All payments are completed within your selected UPI-enabled banking or payment app. UPInspect does not handle or store funds.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Why do some QR payments show a ₹2,000 limit?</summary>
+        <p>In certain cases, banks or UPI apps may apply transaction caps or additional checks when payments are initiated directly through QR scan flows. These limits are determined by your bank or UPI provider — not by UPInspect.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Does UPInspect bypass the ₹2,000 QR limit?</summary>
+        <p>No. UPInspect does not bypass, override, or interfere with any bank-imposed limits. All transactions remain fully subject to your bank's rules, authentication requirements, and regulatory guidelines.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Then how does UPInspect help with higher-value payments?</summary>
+        <p>UPInspect allows you to extract the UPI ID from a QR code and initiate payment manually through your bank's standard transfer flow. Any limits, approvals, or security checks are still enforced entirely by your bank. UPInspect only gives you flexibility in how you start the payment.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is UPInspect compliant with UPI rules?</summary>
+        <p>Yes. UPInspect does not alter transaction data or modify payment limits. It only decodes publicly embedded UPI QR information and allows users to proceed through official UPI apps. All transactions follow NPCI guidelines and your bank's policies.</p>
+      </details>
+    </div>
+
+    <div style="text-align:center;padding:16px 0 4px;">
       <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);letter-spacing:0.5px;">
         UPInspect v2.0 &nbsp;·&nbsp; MIT License
       </p>
