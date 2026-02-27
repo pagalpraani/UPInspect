@@ -16,10 +16,12 @@ const $ = id => document.getElementById(id);
  */
 async function getCardBlob() {
   const canvas = await html2canvas($('qrStandee'), {
-    scale:           3,
+    scale:           Math.max(4, window.devicePixelRatio * 2),
     backgroundColor: '#FFFFFF',
     logging:         false,
     useCORS:         true,
+    allowTaint:      true,
+    imageTimeout:    0,
   });
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }
