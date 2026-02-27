@@ -419,11 +419,15 @@
   border-radius: 12px;
   padding: 10px;
   border: 2px solid #F1F5F9;
+  overflow: hidden;
 }
 
+/* QR canvas renders at 1200px internally for crisp saves.
+   CSS scales it down to ~240px visually — html2canvas reads
+   the full native pixels, so saved/shared images are sharp. */
 #cardQrCode canvas {
-  max-width: 100%;
-  height: auto !important;
+  width: 240px !important;
+  height: 240px !important;
 }
 
 /* ── Footer ── */
