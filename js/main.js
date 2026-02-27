@@ -50,6 +50,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Show the two action buttons below the card
     showPayLinkButtons();
+
+    // #2 Dynamic tab title: "Pay Rahul — UPInspect"
+    const displayName = (pn && pn !== 'Unknown') ? pn : pa;
+    document.title = `Pay ${displayName} — UPInspect`;
   }
 
   // 3. Apply translations
@@ -75,8 +79,18 @@ function exposeGlobals() {
     toggleTheme,
     toggleLang,
 
-    // Routing
-    switchAppView,
+    // Routing — wrap switchAppView so Home nav also resets title & pl UI
+    switchAppView: (view) => {
+      if (view === 'home') {
+        document.title = 'UPInspect | Decode. Verify. Pay.';
+        state.isPaymentLinkMode = false;
+        document.getElementById('plActionButtons').classList.add('hidden');
+        document.getElementById('extractedCard').classList.add('hidden');
+        document.getElementById('bottomNav').classList.remove('hidden');
+        document.getElementById('toolTabs').classList.remove('hidden');
+      }
+      switchAppView(view);
+    },
     navToTools,
     switchToolTab,
 
