@@ -1,6 +1,6 @@
 // ============================================================
 // generator.js — QR card & payment link generation
-// UPInspect v2.0
+// UPInspect v1.0
 // ============================================================
 
 import { state, UPI_REGEX, BASE_PAY_URL } from './state.js';
