@@ -1,6 +1,6 @@
 // ============================================================
 // main.js — Application entry point & bootstrap
-// UPInspect v2.0
+// UPInspect v1.0
 // ============================================================
 
 import { state }                          from './state.js';
