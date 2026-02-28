@@ -1,6 +1,6 @@
 // ============================================================
 // i18n.js — Bilingual translation strings (EN / HI)
-// UPInspect v2.0
+// UPInspect v1.0
 // ============================================================
 
 export const translations = {
