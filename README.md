@@ -12,6 +12,8 @@ Runs 100% locally in the browser — no server, no tracking.
 ```
 upinspect/
 ├── index.html          ← HTML shell (markup only, no inline JS or CSS)
+├── README.md           ← Readme
+├── _redirects           ← Redirect for Cloudflare Pages
 │
 ├── css/
 │   ├── tokens.css      ← Design tokens (CSS variables) & reset
