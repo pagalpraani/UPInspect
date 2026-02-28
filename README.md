@@ -1,4 +1,4 @@
-# UPInspect v1.0
+# UPInspect
 
 > Decode. Verify. Pay Safely.
 
