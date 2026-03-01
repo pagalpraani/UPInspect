@@ -19,56 +19,60 @@ async function getCardBlob() {
   const qrWrap   = $('cardQrCode');
   const qrCanvas = qrWrap.querySelector('canvas');
 
-  if (!qrCanvas) throw new Error('QR canvas not found — generate a QR first.');
+  if (!qrCanvas) throw new Error('QR canvas not found.');
 
-  const SCALE = 3;
+  // Use exact physical pixel density
+  const SCALE = window.devicePixelRatio || 2;
 
-  // Measure live positions before hiding anything
-  const standeeRect = standee.getBoundingClientRect();
-  const qrRect      = qrWrap.getBoundingClientRect();
+  // Force layout to integer pixel grid
+  const rect = standee.getBoundingClientRect();
+  const width  = Math.round(rect.width);
+  const height = Math.round(rect.height);
 
-  // ── Step 1: capture background without the QR ──────────
+  // Temporarily remove any transforms (very important)
+  const previousTransform = standee.style.transform;
+  standee.style.transform = 'none';
+
+  // Hide QR for background capture
   qrWrap.style.visibility = 'hidden';
-  const bgCanvas = await html2canvas(standee, {
-    scale:           SCALE,
-    backgroundColor: '#FFFFFF',
-    logging:         false,
-    useCORS:         false,
-    allowTaint:      false,
-    imageTimeout:    0,
-    // Removed strict width/height to let html2canvas use integer bounds
-  });
-  qrWrap.style.visibility = '';
 
-  // ── Step 2: composite onto fresh canvas ────────────────
+  const bgCanvas = await html2canvas(standee, {
+    scale: SCALE,
+    width,
+    height,
+    backgroundColor: '#FFFFFF',
+    logging: false,
+    useCORS: false,
+    allowTaint: false,
+  });
+
+  qrWrap.style.visibility = '';
+  standee.style.transform = previousTransform || '';
+
+  // Create output canvas
   const out = document.createElement('canvas');
   const ctx = out.getContext('2d');
 
-  // Set output canvas to the exact dimensions html2canvas generated
   out.width  = bgCanvas.width;
   out.height = bgCanvas.height;
 
-  // Disable image smoothing to guarantee no anti-aliasing blur on the copy
   ctx.imageSmoothingEnabled = false;
 
-  // Draw standee background EXACTLY 1:1
   ctx.drawImage(bgCanvas, 0, 0);
 
-  // ── Step 3: draw QR pixels directly (same-origin) ──────
-  // Calculate the actual effective scale html2canvas used to ensure perfect QR placement
-  const effectiveScaleX = bgCanvas.width  / standeeRect.width;
-  const effectiveScaleY = bgCanvas.height / standeeRect.height;
+  // Calculate correct scale
+  const effectiveScaleX = bgCanvas.width  / width;
+  const effectiveScaleY = bgCanvas.height / height;
 
-  const qrX = Math.round((qrRect.left - standeeRect.left) * effectiveScaleX);
-  const qrY = Math.round((qrRect.top  - standeeRect.top)  * effectiveScaleY);
+  const qrRect = qrWrap.getBoundingClientRect();
+
+  const qrX = Math.round((qrRect.left - rect.left) * effectiveScaleX);
+  const qrY = Math.round((qrRect.top  - rect.top)  * effectiveScaleY);
   const qrW = Math.round(qrRect.width  * effectiveScaleX);
   const qrH = Math.round(qrRect.height * effectiveScaleY);
 
-  // White fill for the qrWrap padding area
   ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(qrX, qrY, qrW, qrH);
-
-  // QR pixels — reads all 1200×1200 native pixels, zero upscaling
   ctx.drawImage(qrCanvas, qrX, qrY, qrW, qrH);
 
   return new Promise((resolve, reject) =>
