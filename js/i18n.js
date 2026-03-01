@@ -1,136 +1,114 @@
 // ============================================================
-// i18n.js — Bilingual translation strings (EN / HI)
+// i18n.js — Language loader & DOM applier
 // UPInspect v1.0
-// ============================================================
+//
+// ── Adding a new language ────────────────────────────────────
+//   1. Create  js/locales/xx.js  (copy en.js, translate values)
+//   2. Import it below and add to LOCALES
+//   3. Add it to the CYCLE array to include it in toggle order
+// ────────────────────────────────────────────────────────────
 
-export const translations = {
-  en: {
-    // Home
-    txtEyebrow:      'UPI Security Tool',
-    txtHeroTitle:    'Decode. Verify.',
-    txtHeroAccent:   'Pay with clarity.',
-    txtHeroSub:      'Extract UPI IDs from any QR code and complete payments with complete transparency. No blind payments.',
-    txtGridScan:     'Scan & Pay',
-    txtGridScanSub:  'Inspect any QR safely',
-    txtGridCreate:   'Create QR & Links',
-    txtGridCreateSub:'Share payment requests',
-    txtTrustTitle:   '100% Local & Private',
-    txtTrustDesc:    "UPInspect runs entirely in your browser. Your UPI ID and payment data never touch a server — ever.",
+import en from './locales/en.js';
+import hi from './locales/hi.js';
 
-    // Nav
-    txtNavHome:  'Home',
-    txtNavTools: 'Tools',
-    txtNavAbout: 'About',
+// ── Registry ─────────────────────────────────────────────────
+// Add new languages here — key = BCP-47 code (e.g. 'mr', 'ta', 'te')
+const LOCALES = { en, hi };
 
-    // Tools tabs
-    txtTabScan:   'Scan & Pay',
-    txtTabCreate: 'Create Links & QR',
+// Toggle cycle order — add new language codes to include in rotation
+const CYCLE = ['en', 'hi'];
 
-    // Scanner buttons
-    txtStartCam:  'Scan QR',
-    txtStopCam:   'Stop',
-    txtUploadImg: 'Upload QR',
+// ── Internal state ───────────────────────────────────────────
+let _current = 'en';
 
-    // Extracted card
-    extractTitle:       'Payment Verified',
-    txtPaymentRequest:  'Payment Request',
-    lblUpi:     'UPI ID',
-    lblMerchant:'Merchant',
-    lblAmount:  'Fixed Amount',
-    txtCopy:    'Copy UPI ID',
-    txtPay:     'Pay Now',
-
-    // Generator
-    txtGenQR:      'Generate QR Card',
-    txtGenLinkBtn: 'Copy Link',
-    txtDownload:   'Save Image',
-    txtShareGen:   'Share',
-
-    // About
-    txtAboutTitle:   'About UPInspect',
-    txtAbout1:       "Built to eliminate blind UPI payments. Always know exactly who you're paying before your banking app takes over.",
-    txtAbout2:       'Merchants can generate clean QR cards and shareable payment links. Users can inspect them safely before paying.',
-    txtPrivacyTitle: 'Privacy Pledge',
-    txtPledge1:      'No data is ever sent to a server.',
-    txtPledge2:      'Works entirely in your browser.',
-    txtPledge3:      'Zero tracking, open logic.',
-  },
-
-  hi: {
-    // Home
-    txtEyebrow:      'यूपीआई सुरक्षा उपकरण',
-    txtHeroTitle:    'डिकोड। सत्यापित करें।',
-    txtHeroAccent:   'स्पष्टता से भुगतान करें।',
-    txtHeroSub:      'किसी भी क्यूआर से यूपीआई आईडी निकालें और पूरी पारदर्शिता के साथ भुगतान पूरा करें।',
-    txtGridScan:     'स्कैन और भुगतान',
-    txtGridScanSub:  'सुरक्षित निरीक्षण करें',
-    txtGridCreate:   'क्यूआर और लिंक बनाएं',
-    txtGridCreateSub:'भुगतान अनुरोध साझा करें',
-    txtTrustTitle:   '100% स्थानीय और निजी',
-    txtTrustDesc:    'UPInspect पूरी तरह से आपके ब्राउज़र में चलता है। आपकी यूपीआई आईडी कभी सर्वर तक नहीं पहुँचती।',
-
-    // Nav
-    txtNavHome:  'होम',
-    txtNavTools: 'उपकरण',
-    txtNavAbout: 'बारे में',
-
-    // Tools tabs
-    txtTabScan:   'स्कैन और भुगतान',
-    txtTabCreate: 'लिंक और क्यूआर बनाएं',
-
-    // Scanner buttons
-    txtStartCam:  'क्यूआर स्कैन करें',
-    txtStopCam:   'बंद करें',
-    txtUploadImg: 'क्यूआर अपलोड',
-
-    // Extracted card
-    extractTitle:       'भुगतान सत्यापित',
-    txtPaymentRequest:  'भुगतान अनुरोध',
-    lblUpi:     'यूपीआई आईडी',
-    lblMerchant:'व्यापारी',
-    lblAmount:  'निश्चित राशि',
-    txtCopy:    'यूपीआई आईडी कॉपी करें',
-    txtPay:     'भुगतान करें',
-
-    // Generator
-    txtGenQR:      'क्यूआर कार्ड बनाएं',
-    txtGenLinkBtn: 'लिंक कॉपी करें',
-    txtDownload:   'छवि सहेजें',
-    txtShareGen:   'साझा करें',
-
-    // About
-    txtAboutTitle:   'UPInspect के बारे में',
-    txtAbout1:       'अंधे यूपीआई भुगतान को खत्म करने के लिए बनाया गया।',
-    txtAbout2:       'व्यापारी QR कार्ड और लिंक बना सकते हैं। उपयोगकर्ता भुगतान से पहले सुरक्षित रूप से निरीक्षण कर सकते हैं।',
-    txtPrivacyTitle: 'गोपनीयता प्रतिज्ञा',
-    txtPledge1:      'कोई डेटा सर्वर पर नहीं भेजा जाता।',
-    txtPledge2:      'पूरी तरह आपके ब्राउज़र में।',
-    txtPledge3:      'शून्य ट्रैकिंग।',
-  },
-};
+// ── Public API ───────────────────────────────────────────────
 
 /**
- * Apply the current language to all translatable DOM elements.
- * @param {string} lang - 'en' | 'hi'
- * @param {boolean} isPaymentLinkMode
+ * Get the active language code.
+ * @returns {string}
  */
-export function applyLanguage(lang, isPaymentLinkMode) {
-  const t = translations[lang];
+export function getLang() { return _current; }
 
-  // Update every element whose id matches a translation key.
-  // This always runs in full — payment-link mode is NOT a skip condition.
-  // Labels like lblUpi / lblMerchant / lblAmount are included here.
-  Object.keys(t).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = t[id];
-  });
+/**
+ * Get the full list of available language codes.
+ * @returns {string[]}
+ */
+export function getAvailableLangs() { return CYCLE.slice(); }
 
-  // In payment-link mode the badge title says "Payment Request" not "Payment Verified"
-  if (isPaymentLinkMode) {
-    const el = document.getElementById('extractTitle');
-    if (el) el.textContent = t.txtPaymentRequest;
+/**
+ * Get the next language in the cycle (for toggle button).
+ * @returns {string}
+ */
+export function getNextLang() {
+  const idx = CYCLE.indexOf(_current);
+  return CYCLE[(idx + 1) % CYCLE.length];
+}
+
+/**
+ * Translate a key in the current language.
+ * Falls back to English, then to the key itself.
+ * @param {string} key
+ * @returns {string}
+ */
+export function t(key) {
+  return (LOCALES[_current]?.[key]) ?? LOCALES.en[key] ?? key;
+}
+
+/**
+ * Apply a language to the entire DOM and persist the choice.
+ * @param {string} lang        - BCP-47 code registered in LOCALES
+ * @param {boolean} isPayLinkMode
+ */
+export function applyLanguage(lang, isPayLinkMode = false) {
+  if (!LOCALES[lang]) {
+    console.warn(`[i18n] Unknown language "${lang}", falling back to "en".`);
+    lang = 'en';
   }
 
-  // Update lang toggle button label (shows opposite language to switch to)
-  document.getElementById('langBtn').textContent = lang === 'en' ? 'हिं' : 'EN';
+  _current = lang;
+  document.documentElement.lang = lang;
+
+  const strings = LOCALES[lang];
+
+  // 1 ── ID-based: <span id="txtNavHome"> etc.
+  Object.keys(strings).forEach(key => {
+    const el = document.getElementById(key);
+    if (el) el.textContent = strings[key];
+  });
+
+  // 2 ── data-i18n: <span data-i18n="txtOptional">
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (strings[key] !== undefined) el.textContent = strings[key];
+  });
+
+  // 3 ── data-i18n-placeholder: <input data-i18n-placeholder="txtLabelUpiId">
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (strings[key] !== undefined) el.placeholder = strings[key];
+  });
+
+  // 4 ── data-i18n-label: <label data-i18n-label="txtLabelName">
+  //      Updates only the direct text node, leaving child elements untouched.
+  document.querySelectorAll('[data-i18n-label]').forEach(el => {
+    const key = el.dataset.i18nLabel;
+    if (strings[key] !== undefined) {
+      for (const node of el.childNodes) {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+          node.textContent = strings[key] + ' ';
+          break;
+        }
+      }
+    }
+  });
+
+  // 5 ── Payment link mode: badge = "Payment Request" not "Payment Verified"
+  if (isPayLinkMode) {
+    const el = document.getElementById('extractTitle');
+    if (el) el.textContent = strings.txtPaymentRequest;
+  }
+
+  // 6 ── Lang toggle: shows the label of the NEXT language in cycle
+  const langBtn = document.getElementById('langBtn');
+  if (langBtn) langBtn.textContent = strings.langLabel ?? getNextLang().toUpperCase();
 }
