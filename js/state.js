@@ -9,7 +9,6 @@ export const BASE_PAY_URL = "https://upinspect.pages.dev";
 export const UPI_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z]{2,}$/;
 
 export const state = {
-  currentLang:       'en',
   isPaymentLinkMode: false,
   isScanning:        false,
   rawAmountVal:      '',
