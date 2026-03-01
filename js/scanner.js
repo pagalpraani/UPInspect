@@ -5,12 +5,12 @@
 
 import { state, UPI_REGEX } from './state.js';
 import { showMessage }       from './ui.js';
-import { applyLanguage }     from './i18n.js';
+import { t, getLang, applyLanguage } from './i18n.js';
 import { renderExtractedCard } from './extractor.js';
 
-// ─── DOM helpers ───────────────────────────────────────────
-
 const $ = id => document.getElementById(id);
+
+// ─── DOM helpers ───────────────────────────────────────────
 
 function setScannerUIState(scanning) {
   $('scannerWrapper').classList.toggle('hidden', !scanning);
@@ -55,12 +55,7 @@ export function startScanner() {
     .then(() => { state.isScanning = true; })
     .catch(() => {
       setScannerUIState(false);
-      showMessage(
-        state.currentLang === 'en'
-          ? 'Camera access denied.'
-          : 'कैमरा अनुमति अस्वीकृत।',
-        'error'
-      );
+      showMessage(t('msgCameraDenied'), 'error');
     });
 }
 
@@ -77,19 +72,12 @@ export function initFileUploadListener() {
     state.html5QrCode
       .scanFile(file, true)
       .then(decodedText => parseQRText(decodedText))
-      .catch(() =>
-        showMessage(
-          state.currentLang === 'en'
-            ? 'Cannot read QR from image'
-            : 'छवि से क्यूआर नहीं पढ़ सका',
-          'error'
-        )
-      );
+      .catch(() => showMessage(t('msgQrReadError'), 'error'));
 
-    // Reset so the same file can be re-selected
     e.target.value = '';
   });
 }
+
 
 // ─── QR Parsing ────────────────────────────────────────────
 
@@ -101,7 +89,6 @@ export function initFileUploadListener() {
 function parseQRText(text) {
   const trimmed = text.trim();
 
-  // Case 1: Standard UPI deep-link
   if (trimmed.toLowerCase().startsWith('upi://pay')) {
     try {
       const url = new URL(trimmed);
@@ -111,21 +98,14 @@ function parseQRText(text) {
 
       state.rawAmountVal      = am;
       state.isPaymentLinkMode = false;
-      applyLanguage(state.currentLang, false);
-
+      applyLanguage(getLang(), false);
       renderExtractedCard({ pa, pn, am });
     } catch (_) {
-      showMessage(
-        state.currentLang === 'en'
-          ? 'Could not parse QR data'
-          : 'क्यूआर डेटा पार्स नहीं हो सका',
-        'error'
-      );
+      showMessage(t('msgQrParseError'), 'error');
     }
     return;
   }
 
-  // Case 2: Raw UPI ID (no scheme)
   if (UPI_REGEX.test(trimmed)) {
     state.rawAmountVal = '';
     renderExtractedCard({ pa: trimmed, pn: 'N/A', am: '' });
@@ -133,10 +113,5 @@ function parseQRText(text) {
   }
 
   // Unrecognised
-  showMessage(
-    state.currentLang === 'en'
-      ? 'Invalid UPI QR code'
-      : 'अमान्य यूपीआई क्यूआर',
-    'error'
-  );
+  showMessage(t('msgQrInvalid'), 'error');
 }
