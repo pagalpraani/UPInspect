@@ -4,7 +4,9 @@
 // ============================================================
 
 import { state, UPI_REGEX, BASE_PAY_URL } from './state.js';
+import { t }                                from './i18n.js';
 import { showMessage }                      from './ui.js';
+import { t }                                from './i18n.js';
 
 const $ = id => document.getElementById(id);
 
@@ -21,9 +23,7 @@ function getFormValues() {
 
   if (!UPI_REGEX.test(pa)) {
     showMessage(
-      state.currentLang === 'en'
-        ? 'Enter a valid UPI ID (e.g. name@upi)'
-        : 'मान्य यूपीआई आईडी दर्ज करें',
+      t('msgUpiIdInvalid'),
       'error'
     );
     $('newUpiId').classList.add('invalid');
@@ -32,9 +32,7 @@ function getFormValues() {
 
   if (am && (isNaN(parseFloat(am)) || parseFloat(am) < 0)) {
     showMessage(
-      state.currentLang === 'en'
-        ? 'Enter a valid amount'
-        : 'मान्य राशि दर्ज करें',
+      t('msgAmountInvalid'),
       'error'
     );
     return null;
@@ -82,7 +80,7 @@ export function generateQRCard() {
   }
 
   // Render standee text
-  $('standeeName').textContent   = pn || (state.currentLang === 'en' ? 'UPI Payment' : 'यूपीआई भुगतान');
+  $('standeeName').textContent   = pn || t('msgStandeeDefault');
   $('standeeUpiId').textContent  = pa;
   $('standeeAmount').textContent = am ? `₹ ${parseFloat(am).toFixed(2)}` : '';
 
@@ -126,10 +124,8 @@ export function generateLink() {
   if (pn) url += `/${encodeURIComponent(pn)}`;
   if (am) url += `/${encodeURIComponent(am)}`;
 
-  const successMsg = state.currentLang === 'en' ? 'Payment link copied!' : 'लिंक कॉपी किया गया!';
-  const failMsg    = state.currentLang === 'en'
-    ? 'Copy failed — long-press the link to copy manually'
-    : 'कॉपी विफल — लिंक को मैन्युअली कॉपी करें';
+  const successMsg = t('msgLinkCopied');
+  const failMsg    = t('msgLinkCopyFailed');
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard
