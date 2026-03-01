@@ -6,7 +6,6 @@
 import { state }       from './state.js';
 import { showMessage } from './ui.js';
 import { t }           from './i18n.js';
-import { t }           from './i18n.js';
 
 const $ = id => document.getElementById(id);
 
