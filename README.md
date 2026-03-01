@@ -28,8 +28,9 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
 ```
 upinspect/
 ├── index.html                  ← Single-page app shell (all views inline)
+├── LICENSE                     ← MIT License
 ├── _redirects                  ← Cloudflare Pages SPA routing rule
-├── LICENSE                     ← Licence 
+├── wrangler.jsonc              ← Cloudflare Workers config
 │
 ├── assets/
 │   └── favicon/
@@ -50,15 +51,53 @@ upinspect/
 │
 └── js/
     ├── main.js                 ← Entry point: boot, URL routing, global bridge
-    ├── state.js                ← Shared state object & constants
-    ├── i18n.js                 ← Translation strings (EN/HI) & applyLanguage()
-    ├── ui.js                   ← Toast notifications & theme toggle
+    ├── state.js                ← Shared state & constants (no language state)
     ├── router.js               ← App view switching & tab routing
+    ├── ui.js                   ← Toast notifications & theme toggle
     ├── scanner.js              ← Camera scanning & file-upload QR reading
-    ├── extractor.js            ← Extracted card rendering & UPI pay/copy actions
+    ├── extractor.js            ← Extracted card rendering, copy & pay actions
     ├── generator.js            ← QR card & payment link generation
-    └── share.js                ← Standee PNG export via native canvas rendering
+    ├── share.js                ← Standee PNG export via native canvas (no html2canvas)
+    ├── paylink.js              ← Payment link page logic
+    ├── i18n.js                 ← Language loader, t() helper, applyLanguage()
+    └── locales/
+        ├── en.js               ← English strings (98 keys)
+        └── hi.js               ← Hindi strings (98 keys)
 ```
+
+---
+
+## Multi-Language Support
+
+UPInspect supports English and Hindi with a modular locale system. Adding a new language takes 3 steps:
+
+**1. Create the locale file**
+
+```
+js/locales/mr.js   ← copy en.js, translate all values, keep all keys identical
+```
+
+**2. Register it in `js/i18n.js`**
+
+```js
+import mr from './locales/mr.js';
+
+const LOCALES = { en, hi, mr };       // add to registry
+const CYCLE   = ['en', 'hi', 'mr'];   // add to toggle cycle
+```
+
+**3. Done.** The toggle button cycles through all languages automatically.
+
+### How translations work
+
+| Mechanism | Usage |
+|---|---|
+| `id` matching | `<span id="txtNavHome">` — updated by key lookup |
+| `data-i18n` | `<span data-i18n="txtOptional">` — for nested text nodes |
+| `data-i18n-placeholder` | `<input data-i18n-placeholder="txtLabelUpiId">` |
+| `data-i18n-label` | `<label data-i18n-label="txtLabelName">` — updates text node only, preserves child elements |
+
+In JS files, always use `t('key')` for translated strings — never hardcode `state.currentLang === 'en' ? ... : ...` ternaries. Language state lives in `i18n.js` only, accessed via `getLang()`.
 
 ---
 
@@ -107,20 +146,11 @@ Then open `http://localhost:8080` in your browser.
 
 1. Push the repo to GitHub
 2. Connect it to [Cloudflare Pages](https://pages.cloudflare.com)
-3. Set build command to **none**, output directory to **`/`** (or repo root)
+3. Set build command to **none**, output directory to **`/`** (repo root)
 4. The `_redirects` file handles SPA routing automatically:
    ```
    /* /index.html 200
    ```
-
----
-
-## Adding a New Language
-
-1. Open `js/i18n.js`
-2. Add a new key (e.g. `mr` for Marathi) to the `translations` object with all the same keys as `en`
-3. Update `toggleLang()` in `js/main.js` to cycle through the new language
-4. Update the `langBtn` label logic in `applyLanguage()` inside `js/i18n.js`
 
 ---
 
@@ -130,9 +160,9 @@ Then open `http://localhost:8080` in your browser.
 |---|---|---|
 | [html5-qrcode](https://github.com/mebjas/html5-qrcode) | latest | Camera & file QR scanning |
 | [qr-code-styling](https://github.com/kozakdenys/qr-code-styling) | 1.5.0 | Styled QR code canvas rendering |
-| [html2canvas](https://html2canvas.hertzen.com) | 1.4.1 | Loaded but replaced — standee export now uses native canvas compositing |
+| [html2canvas](https://html2canvas.hertzen.com) | 1.4.1 | Loaded but unused — standee export uses native canvas |
 
-> **Note on image export:** The standee save/share flow bypasses html2canvas entirely. It composites the card directly onto a `<canvas>` using native 2D APIs and reads the QR pixel data via `ctx.drawImage()`. This avoids canvas taint security errors and produces a pixel-perfect 3× resolution PNG.
+> **Note on image export:** The standee save/share flow bypasses html2canvas entirely. It draws the card natively onto a `<canvas>` using the exact colours and layout from `views.css`, then composites the QR via `ctx.drawImage()` reading the full 1200×1200 source pixels directly. This produces a crisp, pixel-perfect 3× PNG with no blur.
 
 ---
 
