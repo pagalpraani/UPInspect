@@ -26,7 +26,6 @@ window.addEventListener('DOMContentLoaded', () => {
   restoreTheme();
   // Restore language preference
   const savedLang = localStorage.getItem('lang') || 'en';
-  state.currentLang = savedLang;
 
   // 2. Handle payment-link mode — parse clean path: /pa/pn/am
   const segments = window.location.pathname.split('/').filter(Boolean);
@@ -58,7 +57,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // 3. Apply translations
-  applyLanguage(state.currentLang, state.isPaymentLinkMode);
+  applyLanguage(savedLang, state.isPaymentLinkMode);
 
   // 4. Bind file-upload listener
   initFileUploadListener();
@@ -141,8 +140,8 @@ function goHome() {
 // ─── Language toggle ───────────────────────────────────────
 
 function toggleLang() {
-  // Cycle to next language — works for 2+ languages automatically
-  state.currentLang = getNextLang();
-  localStorage.setItem('lang', state.currentLang);
-  applyLanguage(state.currentLang, state.isPaymentLinkMode);
+  // getLang() / getNextLang() are the single source of truth — no state.currentLang
+  const next = getNextLang();
+  localStorage.setItem('lang', next);
+  applyLanguage(next, state.isPaymentLinkMode);
 }
