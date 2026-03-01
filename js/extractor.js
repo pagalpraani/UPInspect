@@ -5,6 +5,8 @@
 
 import { state }       from './state.js';
 import { showMessage } from './ui.js';
+import { t }           from './i18n.js';
+import { t }           from './i18n.js';
 
 const $ = id => document.getElementById(id);
 
@@ -31,6 +33,7 @@ export function renderExtractedCard({ pa, pn, am }) {
   }
 }
 
+
 /**
  * Copy the displayed UPI ID to the clipboard.
  */
@@ -40,13 +43,8 @@ export function copyUPI() {
 
   navigator.clipboard
     .writeText(upiId)
-    .then(() =>
-      showMessage(
-        state.currentLang === 'en' ? 'UPI ID copied!' : 'यूपीआई आईडी कॉपी हुई!',
-        'success'
-      )
-    )
-    .catch(() => showMessage('Copy failed', 'error'));
+    .then(() => showMessage(t('msgUpiCopied'), 'success'))
+    .catch(() => showMessage(t('msgCopyFailed'), 'error'));
 }
 
 /**
@@ -59,6 +57,5 @@ export function openUPI() {
 
   let link = `upi://pay?pa=${encodeURIComponent(pa)}&pn=${encodeURIComponent(pn)}&cu=INR`;
   if (state.rawAmountVal) link += `&am=${state.rawAmountVal}`;
-
   window.open(link, '_self');
 }
