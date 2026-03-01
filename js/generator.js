@@ -4,9 +4,8 @@
 // ============================================================
 
 import { state, UPI_REGEX, BASE_PAY_URL } from './state.js';
-import { t }                                from './i18n.js';
-import { showMessage }                      from './ui.js';
-import { t }                                from './i18n.js';
+import { t }                               from './i18n.js';
+import { showMessage }                     from './ui.js';
 
 const $ = id => document.getElementById(id);
 
