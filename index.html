@@ -363,8 +363,31 @@
       </div>
 
       <div class="detail-row hidden" id="groupAmount">
-        <span class="detail-label" id="lblAmount">Fixed Amount</span>
-        <div  class="detail-value amount" id="valAmount">—</div>
+        <span class="detail-label" id="lblAmount">Amount</span>
+        <div class="amount-row">
+          <!-- Display mode -->
+          <div class="amount-display" id="amountDisplay">
+            <span class="detail-value amount" id="valAmount">—</span>
+            <button class="btn-edit-amt" id="btnEditAmt" onclick="startEditAmount()" aria-label="Edit amount">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              <span id="txtEditAmount">Edit</span>
+            </button>
+          </div>
+          <!-- Edit mode (hidden by default) -->
+          <div class="amount-edit hidden" id="amountEdit">
+            <span class="amount-prefix">₹</span>
+            <input type="number" id="editAmtInput" min="1" step="any" placeholder="Enter amount" aria-label="Enter custom amount">
+            <button class="btn-amt-confirm" onclick="confirmEditAmount()" aria-label="Confirm amount">
+              <span id="txtConfirmAmt">Confirm</span>
+            </button>
+            <button class="btn-amt-cancel" onclick="cancelEditAmount()" aria-label="Cancel edit">
+              <span id="txtCancelEdit">Cancel</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="btn-group">
