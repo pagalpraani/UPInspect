@@ -70,6 +70,9 @@ export default {
   txtShareGen: 'शेयर करें',
 
   // ── Extracted / verified card ───────────────────────────
+  txtEditAmount:       'संपादित करें',
+  txtConfirmAmt:       'पुष्टि करें',
+  txtCancelEdit:       'रद्द करें',
   extractTitle:      'पेमेंट वेरिफाइड',
   txtPaymentRequest: 'पेमेंट रिक्वेस्ट',
   lblUpi:      'UPI ID',
