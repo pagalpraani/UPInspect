@@ -22,7 +22,9 @@ const NAME_REGEX = /^[A-Za-z0-9 &.,\-''/]*$/;
 function getFormValues() {
   const pa = $('newUpiId').value.trim().toLowerCase();
   const pn = $('newName').value.trim();
-  const am = $('newAmount').value.trim();
+  // Treat '0' (or any value < 1) as blank — silently omit from QR/link
+  const rawAm = $('newAmount').value.trim();
+  const am    = (rawAm && Number(rawAm) >= 1) ? rawAm : '';
 
   if (!UPI_REGEX.test(pa)) {
     showMessage(
@@ -36,13 +38,6 @@ function getFormValues() {
   if (pn && !NAME_REGEX.test(pn)) {
     showMessage(t('msgNameInvalid'), 'error');
     $('newName').classList.add('invalid');
-    return null;
-  }
-
-  // Use Number() — parseFloat('100&pa=attacker@upi') wrongly parses to 100
-  const amtNum = am ? Number(am) : NaN;
-  if (am && (isNaN(amtNum) || amtNum < 1)) {
-    showMessage(t('msgAmountInvalid'), 'error');
     return null;
   }
 
@@ -101,7 +96,7 @@ export function generateQRCard() {
   }
 
   // Render standee text
-  $('standeeName').textContent   = pn || t('msgStandeeDefault');
+  $('standeeName').textContent   = pn || t('txtStandeeDefault');
   $('standeeUpiId').textContent  = pa;
   $('standeeAmount').textContent = (am && Number(am) >= 1) ? `₹ ${Number(am).toFixed(2)}` : '';
 
