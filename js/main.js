@@ -9,7 +9,7 @@ import { applyLanguage, getLang,
          getNextLang }                  from './i18n.js';
 import { switchAppView, navToTools,
          switchToolTab }                  from './router.js';
-import { startScanner, stopScanner,
+import { startScanner, stopScanner, toggleTorch,
          initFileUploadListener }         from './scanner.js';
 import { copyUPI, openUPI,
          renderExtractedCard }            from './extractor.js';
@@ -97,6 +97,7 @@ function exposeGlobals() {
     // Scanner
     startScanner,
     stopScanner,
+    toggleTorch,
 
     // Extracted card
     copyUPI,
