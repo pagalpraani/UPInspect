@@ -12,7 +12,9 @@ import { switchAppView, navToTools,
 import { startScanner, stopScanner, toggleTorch,
          initFileUploadListener }         from './scanner.js';
 import { copyUPI, openUPI,
-         renderExtractedCard }            from './extractor.js';
+         renderExtractedCard,
+         startEditAmount, confirmEditAmount,
+         cancelEditAmount }            from './extractor.js';
 import { validateUpiLive, generateQRCard,
          generateLink, resetCreateForm }  from './generator.js';
 import { downloadStandee, shareStandee } from './share.js';
@@ -102,6 +104,9 @@ function exposeGlobals() {
     // Extracted card
     copyUPI,
     openUPI,
+    startEditAmount,
+    confirmEditAmount,
+    cancelEditAmount,
 
     // Generator
     validateUpiLive,
