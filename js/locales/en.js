@@ -131,6 +131,7 @@ export default {
   msgQrParseError:   'Could not parse QR data.',
   msgQrInvalid:      'Invalid UPI QR code.',
   msgUpiIdInvalid:   'Enter a valid UPI ID (e.g. name@upi)',
+  msgNameInvalid:    'Merchant name must use English letters only (A–Z, 0–9, spaces).',
   msgAmountInvalid:  'Enter a valid amount.',
   msgUpiCopied:      'UPI ID copied!',
   msgCopyFailed:     'Copy failed.',
