@@ -15,7 +15,7 @@ const $ = id => document.getElementById(id);
  */
 export function renderExtractedCard({ pa, pn, am }) {
   $('valUpiId').textContent   = pa;
-  $('valMerchant').textContent = pn;
+  $('valMerchant').textContent = pn || '—';
 
   // Only show amount row if it is a valid number >= 1
   const amtNum = Number(am);
@@ -59,7 +59,8 @@ export function openUPI() {
   const pn = $('valMerchant').textContent;
   if (!pa || pa === '—' || pa === 'N/A') return;
 
-  let link = `upi://pay?pa=${encodeURIComponent(pa)}&pn=${encodeURIComponent(pn)}&cu=INR`;
+  const safePn = (pn && pn !== '—') ? pn : '';
+  let link = `upi://pay?pa=${encodeURIComponent(pa)}${safePn ? `&pn=${encodeURIComponent(safePn)}` : ''}&cu=INR`;
 
   // Use Number() not parseFloat() — parseFloat('100&pa=attacker@upi') = 100 (injection risk)
   // Only include amount if it is a real number >= 1
