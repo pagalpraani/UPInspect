@@ -10,12 +10,19 @@ import { renderExtractedCard } from './extractor.js';
 
 const $ = id => document.getElementById(id);
 
+let _torchOn = false;
+
 // ─── DOM helpers ───────────────────────────────────────────
 
 function setScannerUIState(scanning) {
   $('scannerWrapper').classList.toggle('hidden', !scanning);
   $('btnStartCam').classList.toggle('hidden',  scanning);
   $('btnStopCam').classList.toggle('hidden',  !scanning);
+  $('btnTorch').classList.toggle('hidden',    !scanning);
+  if (!scanning) {
+    _torchOn = false;
+    updateTorchUI();
+  }
 }
 
 // ─── Lifecycle ─────────────────────────────────────────────
@@ -28,10 +35,35 @@ function initScanner() {
 
 export async function stopScanner() {
   if (state.html5QrCode && state.isScanning) {
+    // Turn off torch before stopping to avoid device lock-up on some phones
+    if (_torchOn) {
+      try { await state.html5QrCode.applyVideoConstraints({ advanced: [{ torch: false }] }); } catch (_) {}
+      _torchOn = false;
+    }
     try { await state.html5QrCode.stop(); } catch (_) {}
     state.isScanning = false;
   }
   setScannerUIState(false);
+}
+
+export async function toggleTorch() {
+  if (!state.html5QrCode || !state.isScanning) return;
+  try {
+    _torchOn = !_torchOn;
+    await state.html5QrCode.applyVideoConstraints({ advanced: [{ torch: _torchOn }] });
+    updateTorchUI();
+  } catch (_) {
+    _torchOn = false;
+    showMessage(t('msgTorchUnsupported'), 'error');
+  }
+}
+
+function updateTorchUI() {
+  const btn = $('btnTorch');
+  if (!btn) return;
+  btn.classList.toggle('btn-torch-on', _torchOn);
+  btn.setAttribute('aria-label', _torchOn ? t('txtTorchOff') : t('txtTorchOn'));
+  btn.setAttribute('title',      _torchOn ? t('txtTorchOff') : t('txtTorchOn'));
 }
 
 export function startScanner() {
