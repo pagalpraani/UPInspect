@@ -196,16 +196,19 @@ function drawIcon(ctx, bx, by, size) {
   // Three corner squares: same x/y/w/h/rx as the SVG rects
   const squares = [[3, 3], [14, 3], [3, 14]];
   squares.forEach(([sx, sy]) => {
-    const rx = 1.5 * sc;
-    const sw = 7 * sc;
-    const px = sx * sc, py = sy * sc;
-    ctx.beginPath();
-    ctx.roundRect
-      ? ctx.roundRect(px, py, sw, sw, rx)
-      : rrPath(ctx, px, py, sw, sw, rx);
-    ctx.stroke();
-  });
-
+  const rx = 1.5 * sc;
+  const sw = 7 * sc;
+  const px = sx * sc, py = sy * sc;
+  ctx.beginPath();
+  if (ctx.roundRect) {
+    ctx.roundRect(px, py, sw, sw, rx);
+  } else {
+    rrPath(ctx, px, py, sw, sw, rx);
+  }
+  ctx.fillStyle = '#FFFFFF';   // Filled like SVG
+  ctx.fill();
+});
+  
   // Arrow: M14 14 h3  →  move to (14,14) line to (17,14)
   //        m0 0 v3    →  (17,14) line to (17,17)   [same start: sub-path]
   //        m0-3 l4 4  →  from (17,14) line to (21,18)
