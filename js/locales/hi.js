@@ -126,6 +126,9 @@ export default {
   txtVersion: 'UPInspect v1.0  ·  MIT लाइसेंस',
 
   // ── Toast / error messages ──────────────────────────────
+  txtTorchOn:            'टॉर्च चालू करें',
+  txtTorchOff:           'टॉर्च बंद करें',
+  msgTorchUnsupported:   'इस डिवाइस पर टॉर्च उपलब्ध नहीं है।',
   msgCameraDenied:   'कैमरे की अनुमति नहीं मिली।',
   msgQrReadError:    'इमेज से QR नहीं पढ़ा जा सका।',
   msgQrParseError:   'QR डेटा को प्रोसेस नहीं किया जा सका।',
