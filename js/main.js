@@ -29,14 +29,26 @@ window.addEventListener('DOMContentLoaded', () => {
   // Restore language preference
   const savedLang = localStorage.getItem('lang') || 'en';
 
-  // 2. Handle payment-link mode — parse clean path: /pa/pn/am
+  // 2. Handle payment-link mode — smart segment parsing
+  //    Supports all variants:
+  //      /pa               → UPI ID only
+  //      /pa/pn            → UPI ID + merchant name
+  //      /pa/am            → UPI ID + amount  (seg1 is numeric)
+  //      /pa/pn/am         → UPI ID + name + amount
   const segments = window.location.pathname.split('/').filter(Boolean);
   const pa = segments[0] ? decodeURIComponent(segments[0]) : null;
 
   if (pa) {
     state.isPaymentLinkMode = true;
-    const pn = segments[1] ? decodeURIComponent(segments[1]) : 'Unknown';
-    const am = segments[2] ? decodeURIComponent(segments[2]) : '';
+
+    const seg1 = segments[1] ? decodeURIComponent(segments[1]) : '';
+    const seg2 = segments[2] ? decodeURIComponent(segments[2]) : '';
+
+    // If seg1 is a positive number it is an amount, not a name
+    const seg1IsAmount = seg1 !== '' && Number(seg1) > 0 && !isNaN(Number(seg1));
+
+    const pn = seg1IsAmount ? ''    : seg1;
+    const am = seg1IsAmount ? seg1  : seg2;
     state.rawAmountVal = am;
 
     // Show tools view but hide nav, tabs AND the scan/create tab cards
