@@ -74,7 +74,10 @@ export default {
   txtPaymentRequest: 'Payment Request',
   lblUpi:      'UPI ID',
   lblMerchant: 'Merchant',
-  lblAmount:   'Fixed Amount',
+  txtEditAmount:       'Edit',
+  txtConfirmAmt:       'Confirm',
+  txtCancelEdit:       'Cancel',
+  lblAmount:   'Amount',
   txtCopy:     'Copy UPI ID',
   txtPay:      'Pay Now',
 
