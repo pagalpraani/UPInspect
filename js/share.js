@@ -9,8 +9,9 @@
 // html2canvas is intentionally NOT used (re-rasterises fonts).
 // ============================================================
 
-import { showMessage } from './ui.js';
-import { t }           from './i18n.js';
+import { showMessage }         from './ui.js';
+import { t }                   from './i18n.js';
+import { BASE_PAY_URL }        from './state.js';
 
 const $ = id => document.getElementById(id);
 
@@ -190,23 +191,18 @@ function ellipsis(ctx, text, maxW) {
 
 /** Draw the UPInspect QR-corner icon inside the brand icon box. */
 function drawIcon(ctx, bx, by, size) {
-  // Matches favicon.svg exactly:
-  //   viewBox 0 0 36 36
-  //   <g transform="translate(8,8) scale(0.8333)"> on a 36×36 box
-  //   icon paths in 0-24 space, stroke-width="2"
-  const iconPx  = size * (20 / 36);   // 20/36 of box = icon drawing area
-  const offset  = size * (8  / 36);   // 8/36  of box = padding offset
-  const sc      = iconPx / 24;        // maps 0-24 SVG coords to pixels
+  const iconPx  = size * (20 / 36);
+  const offset  = size * (8  / 36);
+  const sc      = iconPx / 24;
 
   ctx.save();
   ctx.translate(bx + offset, by + offset);
 
   ctx.strokeStyle = '#FFFFFF';
-  ctx.lineWidth   = Math.max(1, 2 * sc);   // stroke-width="2" in SVG units
+  ctx.lineWidth   = Math.max(1, 2 * sc);
   ctx.lineCap     = 'round';
   ctx.lineJoin    = 'round';
 
-  // Three corner squares — exact SVG coords: (3,3), (14,3), (3,14), 7×7, rx=1.5
   [[3, 3], [14, 3], [3, 14]].forEach(([sx, sy]) => {
     const px = sx * sc, py = sy * sc, sw = 7 * sc, rx = 1.5 * sc;
     ctx.beginPath();
@@ -216,11 +212,10 @@ function drawIcon(ctx, bx, by, size) {
     ctx.stroke();
   });
 
-  // Arrow path: M14 14 h3 m0 0 v3 m0-3 l4 4
   ctx.beginPath();
-  ctx.moveTo(14 * sc, 14 * sc); ctx.lineTo(17 * sc, 14 * sc);  // h3
-  ctx.moveTo(17 * sc, 14 * sc); ctx.lineTo(17 * sc, 17 * sc);  // v3
-  ctx.moveTo(17 * sc, 14 * sc); ctx.lineTo(21 * sc, 18 * sc);  // l4 4
+  ctx.moveTo(14 * sc, 14 * sc); ctx.lineTo(17 * sc, 14 * sc);
+  ctx.moveTo(17 * sc, 14 * sc); ctx.lineTo(17 * sc, 17 * sc);
+  ctx.moveTo(17 * sc, 14 * sc); ctx.lineTo(21 * sc, 18 * sc);
   ctx.stroke();
 
   ctx.restore();
@@ -283,72 +278,45 @@ export async function shareStandee() {
   const btn = $('btnShare');
   if (btn) btn.disabled = true;
 
-  // ── Step 1: render blob first (async) ───────────────────────────────────
-  let blob;
   try {
-    blob = await getCardBlob();
-  } catch (e) {
-    showMessage(t('msgShareFailed'), 'error');
-    if (btn) btn.disabled = false;
-    return;
-  }
-
-  // ── Step 2: build caption (sync, no awaits) ──────────────────────────────
-  const shareName   = $('standeeName').textContent.trim();
-  const shareAmount = $('standeeAmount').textContent.trim();
-  const shareUpiId  = $('standeeUpiId').textContent.trim();
-
-  const payLine = shareName && shareName !== 'UPI Payment'
-    ? `Pay ${shareName}${shareAmount ? ' ' + shareAmount : ''}`
-    : `Pay ${shareUpiId}${shareAmount ? ' ' + shareAmount : ''}`;
-
-  // Payment link — always included so recipient can tap to pay
-  const rawAm = shareAmount.replace('₹', '').trim();
-  const amNum = Number(rawAm);
-  let paymentLink = `${BASE_PAY_URL}/${shareUpiId.replace(/[/?#\[\]!$&'()*+,;=%]/g, encodeURIComponent)}`;
-  if (shareName && shareName !== 'UPI Payment') paymentLink += `/${encodeURIComponent(shareName)}`;
-  if (rawAm && !isNaN(amNum) && amNum >= 1)      paymentLink += `/${encodeURIComponent(String(amNum))}`;
-
-  // Single caption for every browser and every variant
-  const caption = `${payLine}\n\n🔗 Pay here: ${paymentLink}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
-
-  // ── Step 3: share or download ────────────────────────────────────────────
-  if (navigator.share) {
-    // Try sharing image + caption via the native share sheet.
-    // If the browser rejects the file (e.g. Firefox Android), fall back to
-    // downloading the image and sharing text-only.
+    const blob = await getCardBlob();
     const file = new File([blob], 'UPInspect-QR.png', { type: 'image/png' });
-    try {
+
+    // Build caption
+    const shareName   = $('standeeName').textContent.trim();
+    const shareAmount = $('standeeAmount').textContent.trim();
+    const shareUpiId  = $('standeeUpiId').textContent.trim();
+
+    const payLine = shareName && shareName !== 'UPI Payment'
+      ? `Pay ${shareName}${shareAmount ? ' ' + shareAmount : ''}`
+      : `Pay ${shareUpiId}${shareAmount ? ' ' + shareAmount : ''}`;
+
+    // Payment link — always included in caption
+    const rawAm = shareAmount.replace('₹', '').trim();
+    const amNum = Number(rawAm);
+    let paymentLink = `${BASE_PAY_URL}/${shareUpiId.replace(/[/?#\[\]!$&'()*+,;=%]/g, encodeURIComponent)}`;
+    if (shareName && shareName !== 'UPI Payment') paymentLink += `/${encodeURIComponent(shareName)}`;
+    if (rawAm && !isNaN(amNum) && amNum >= 1)      paymentLink += `/${encodeURIComponent(String(amNum))}`;
+
+    const caption = `${payLine}\n\n🔗 Pay here: ${paymentLink}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
+
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      // Supports image sharing (Chrome Android, iOS Safari) — share with image
       await navigator.share({ title: payLine, text: caption, files: [file] });
-    } catch (e) {
-      if (e.name === 'AbortError') {
-        // User cancelled — do nothing
-      } else {
-        // File share not supported — download image + share text
-        _triggerDownload(blob);
-        try {
-          await navigator.share({ title: payLine, text: caption });
-        } catch (e2) {
-          if (e2.name !== 'AbortError') showMessage(t('msgShareFailed'), 'error');
-        }
-      }
+    } else if (navigator.share) {
+      // Share API exists but no file support (Firefox Android) — download + share text
+      await downloadStandee();
+      await navigator.share({ title: payLine, text: caption });
+    } else {
+      // No share API (desktop) — just download
+      await downloadStandee();
+      return;
     }
-  } else {
-    // No share API (desktop) — just download
-    _triggerDownload(blob);
+  } catch (e) {
+    if (e.name !== 'AbortError') {
+      showMessage(t('msgShareFailed'), 'error');
+    }
   }
 
   if (btn) btn.disabled = false;
-}
-
-// Download a Blob as a PNG file
-function _triggerDownload(blob) {
-  const url = URL.createObjectURL(blob);
-  const a   = document.createElement('a');
-  a.href     = url;
-  a.download = 'UPInspect-QR.png';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 100);
 }
