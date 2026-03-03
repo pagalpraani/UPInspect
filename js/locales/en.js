@@ -28,7 +28,7 @@ export default {
   txtCap2Title:     'Full Transparency',
   txtCap2Desc:      'Instantly view the underlying UPI ID, merchant name, and requested amount.',
   txtCap3Title:     'Flexible Payments',
-  txtCap3Desc:      'Tap "Pay Now" to open your preferred app, or copy the UPI ID for manual high-value transfers.',
+  txtCap3Desc:      'Edit Amount or "Pay Now" to open your preferred app, or copy the UPI ID for manual high-value transfers.',
   txtCap4Title:     'Custom Generation',
   txtCap4Desc:      'Create clean, shareable payment links and professional digital QR standees.',
   txtCapNote:       'UPInspect acts as your secure gateway.',
