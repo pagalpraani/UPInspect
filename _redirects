@@ -1,3 +1,6 @@
-# Cloudflare Pages routing
-# Serve index.html for all payment link paths: /pa, /pa/pn, /pa/pn/am
-/*    /index.html   200
+# SPA routing — payment link paths: /pa, /pa/pn, /pa/pn/am
+# Using explicit depth patterns avoids the infinite-loop warning
+# that /* /index.html 200 triggers on Cloudflare Pages.
+/:seg1             /index.html  200
+/:seg1/:seg2       /index.html  200
+/:seg1/:seg2/:seg3 /index.html  200
