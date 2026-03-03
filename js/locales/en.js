@@ -93,7 +93,7 @@ export default {
   txtFeat1Title: 'Decode & Inspect',
   txtFeat1Desc:  'Extract and view the UPI ID, merchant name, and requested amount from any QR code before paying. Scanned amounts can be edited inline before you pay.',
   txtFeat2Title: 'Scan or Upload',
-  txtFeat2Desc:  "Use your device's camera for live scanning — with torch support for low-light environments — or upload a saved QR screenshot directly from your gallery.",
+  txtFeat2Desc:  "Use your device's camera for live scanning with torch support for low-light environments or upload a saved QR screenshot directly from your gallery.",
   txtFeat3Title: 'Create & Share',
   txtFeat3Desc:  'Generate custom UPI payment links and professional QR standee cards you can share anywhere.',
   txtFeat4Title: '100% Private & Local',
