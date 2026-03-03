@@ -37,7 +37,11 @@ export async function stopScanner() {
   if (state.html5QrCode && state.isScanning) {
     // Turn off torch before stopping to avoid device lock-up on some phones
     if (_torchOn) {
-      try { await state.html5QrCode.applyVideoConstraints({ advanced: [{ torch: false }] }); } catch (_) {}
+      try {
+        const video = document.querySelector('#reader video');
+        const track = video?.srcObject?.getVideoTracks?.()?.[0];
+        if (track) await track.applyConstraints({ advanced: [{ torch: false }] });
+      } catch (_) {}
       _torchOn = false;
     }
     try { await state.html5QrCode.stop(); } catch (_) {}
@@ -47,13 +51,32 @@ export async function stopScanner() {
 }
 
 export async function toggleTorch() {
-  if (!state.html5QrCode || !state.isScanning) return;
+  if (!state.isScanning) return;
+
+  // Get the live video track directly from the stream — works in Chrome and Firefox.
+  // html5-qrcode's applyVideoConstraints() only works in Chrome.
+  const video = document.querySelector('#reader video');
+  const track = video?.srcObject?.getVideoTracks?.()?.[0];
+
+  if (!track) {
+    showMessage(t('msgTorchUnsupported'), 'error');
+    return;
+  }
+
+  // Check if torch is supported on this track before attempting
+  const capabilities = track.getCapabilities?.();
+  if (!capabilities?.torch) {
+    showMessage(t('msgTorchUnsupported'), 'error');
+    return;
+  }
+
   try {
     _torchOn = !_torchOn;
-    await state.html5QrCode.applyVideoConstraints({ advanced: [{ torch: _torchOn }] });
+    await track.applyConstraints({ advanced: [{ torch: _torchOn }] });
     updateTorchUI();
   } catch (_) {
     _torchOn = false;
+    updateTorchUI();
     showMessage(t('msgTorchUnsupported'), 'error');
   }
 }
