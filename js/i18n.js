@@ -1,6 +1,6 @@
 // ============================================================
 // i18n.js — Language loader & DOM applier
-// UPInspect v1.0
+// UPInspect
 //
 // ── Adding a new language ────────────────────────────────────
 //   1. Create  js/locales/xx.js  (copy en.js, translate values)
