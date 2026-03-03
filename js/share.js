@@ -283,21 +283,17 @@ export async function shareStandee() {
   const btn = $('btnShare');
   if (btn) btn.disabled = true;
 
-  // ── Build blob and all text BEFORE any share/download call ──────────────
-  // navigator.share() must be called within the same user-gesture tick.
-  // We do all async work (getCardBlob, fonts.ready) first, then share
-  // synchronously so Firefox doesn't expire the gesture.
-  let blob, file;
+  // ── Step 1: render blob first (async) ───────────────────────────────────
+  let blob;
   try {
     blob = await getCardBlob();
-    file = new File([blob], 'UPInspect-QR.png', { type: 'image/png' });
   } catch (e) {
     showMessage(t('msgShareFailed'), 'error');
     if (btn) btn.disabled = false;
     return;
   }
 
-  // Build caption text
+  // ── Step 2: build caption (sync, no awaits) ──────────────────────────────
   const shareName   = $('standeeName').textContent.trim();
   const shareAmount = $('standeeAmount').textContent.trim();
   const shareUpiId  = $('standeeUpiId').textContent.trim();
@@ -306,51 +302,46 @@ export async function shareStandee() {
     ? `Pay ${shareName}${shareAmount ? ' ' + shareAmount : ''}`
     : `Pay ${shareUpiId}${shareAmount ? ' ' + shareAmount : ''}`;
 
-  // Build payment link (same encoding as generator.js)
+  // Payment link — always included so recipient can tap to pay
   const rawAm = shareAmount.replace('₹', '').trim();
   const amNum = Number(rawAm);
   let paymentLink = `${BASE_PAY_URL}/${shareUpiId.replace(/[/?#\[\]!$&'()*+,;=%]/g, encodeURIComponent)}`;
   if (shareName && shareName !== 'UPI Payment') paymentLink += `/${encodeURIComponent(shareName)}`;
   if (rawAm && !isNaN(amNum) && amNum >= 1)      paymentLink += `/${encodeURIComponent(String(amNum))}`;
 
-  // Standard caption — Chrome/iOS get the image so no link needed
-  const caption = `${payLine}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
+  // Single caption for every browser and every variant
+  const caption = `${payLine}\n\n🔗 Pay here: ${paymentLink}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
 
-  // Firefox caption — no image in share sheet, include tappable payment link
-  const captionWithLink = `${payLine}\n\n🔗 Pay here: ${paymentLink}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
-
-  // ── Now share/download — all async prep is done, gesture is still live ──
-  if (!navigator.share) {
-    // No Web Share API (desktop) — just download
-    _triggerDownload(blob);
-    if (btn) btn.disabled = false;
-    return;
-  }
-
-  // Try sharing with image first (Chrome Android, iOS Safari, Edge).
-  // If the browser doesn't support file sharing, it throws — we catch and
-  // fall back to download + text share (Firefox Android).
-  try {
-    await navigator.share({ title: payLine, text: caption, files: [file] });
-  } catch (e) {
-    if (e.name === 'AbortError') {
-      // User cancelled — do nothing
-    } else {
-      // File sharing not supported (Firefox Android) —
-      // download the image then share text caption with payment link
-      _triggerDownload(blob);
-      try {
-        await navigator.share({ title: payLine, text: captionWithLink });
-      } catch (e2) {
-        if (e2.name !== 'AbortError') showMessage(t('msgShareFailed'), 'error');
+  // ── Step 3: share or download ────────────────────────────────────────────
+  if (navigator.share) {
+    // Try sharing image + caption via the native share sheet.
+    // If the browser rejects the file (e.g. Firefox Android), fall back to
+    // downloading the image and sharing text-only.
+    const file = new File([blob], 'UPInspect-QR.png', { type: 'image/png' });
+    try {
+      await navigator.share({ title: payLine, text: caption, files: [file] });
+    } catch (e) {
+      if (e.name === 'AbortError') {
+        // User cancelled — do nothing
+      } else {
+        // File share not supported — download image + share text
+        _triggerDownload(blob);
+        try {
+          await navigator.share({ title: payLine, text: caption });
+        } catch (e2) {
+          if (e2.name !== 'AbortError') showMessage(t('msgShareFailed'), 'error');
+        }
       }
     }
+  } else {
+    // No share API (desktop) — just download
+    _triggerDownload(blob);
   }
 
   if (btn) btn.disabled = false;
 }
 
-// Trigger a file download from an already-rendered Blob
+// Download a Blob as a PNG file
 function _triggerDownload(blob) {
   const url = URL.createObjectURL(blob);
   const a   = document.createElement('a');
