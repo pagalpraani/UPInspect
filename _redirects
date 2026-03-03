@@ -1,6 +1,11 @@
-# SPA routing — payment link paths: /pa, /pa/pn, /pa/pn/am
-# Using explicit depth patterns avoids the infinite-loop warning
-# that /* /index.html 200 triggers on Cloudflare Pages.
+# Cloudflare Pages — SPA routing for payment link paths
+# Static asset directories are excluded so CSS, JS, and images load correctly.
+# Exclusions must come BEFORE the catch-all rules (Cloudflare matches first rule wins).
+
+/css/*     /css/:splat     200
+/js/*      /js/:splat      200
+/assets/*  /assets/:splat  200
+
 /:seg1             /index.html  200
 /:seg1/:seg2       /index.html  200
 /:seg1/:seg2/:seg3 /index.html  200
