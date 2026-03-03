@@ -43,12 +43,12 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   UPInspect uses clean path-based URLs for shareable payment links:
 
   ```text
-  [https://upinspect.pages.dev/](https://upinspect.pages.dev/){upi-id}/{name}/{amount}
-  
+  https://upinspect.pages.dev/{upi-id}/{name}/{amount}
+
   # Examples
-  [https://upinspect.pages.dev/rahul@upi/Rahul%20Traders/500](https://upinspect.pages.dev/rahul@upi/Rahul%20Traders/500)
-  [https://upinspect.pages.dev/shop@okaxis/My%20Shop](https://upinspect.pages.dev/shop@okaxis/My%20Shop)
-  [https://upinspect.pages.dev/pay@upi/500](https://upinspect.pages.dev/pay@upi/500)
+  https://upinspect.pages.dev/rahul@upi/Rahul%20Traders/500
+  https://upinspect.pages.dev/shop@okaxis/My%20Shop
+  https://upinspect.pages.dev/pay@upi/500
   ```
 
   | Segment | Required | Description |
@@ -58,7 +58,7 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   | `amount` | Optional | Pre-filled amount in ₹ (numeric segment auto-detected) |
 
   The router auto-detects whether the second segment is a name or an amount, so both `/pa/500` and `/pa/name/500` resolve correctly.
-  
+
   When opened, the link shows a verified payment card with **Pay Now** and **Copy UPI ID** options. No app install required.
 </details>
 
@@ -75,7 +75,7 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   **2. Register it in `js/i18n.js`**
   ```js
   import mr from './locales/mr.js';
-  
+
   const LOCALES = { en, hi, mr };       // add to registry
   const CYCLE   = ['en', 'hi', 'mr'];   // add to toggle cycle
   ```
@@ -103,10 +103,10 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   ```bash
   # Python (built-in)
   python3 -m http.server 8080
-  
+
   # Node
   npx serve .
-  
+
   # VS Code
   # Install "Live Server" extension → click "Go Live"
   ```
@@ -119,10 +119,10 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   4. The `_redirects` file handles SPA routing. Asset directories are passed through first, then payment link paths fall through to `index.html`:
 
   ```text
-  /css/* /css/:splat     200
-  /js/* /js/:splat      200
-  /assets/* /assets/:splat  200
-  
+  /css/*    /css/:splat    200
+  /js/*     /js/:splat     200
+  /assets/* /assets/:splat 200
+
   /:seg1             /index.html  200
   /:seg1/:seg2       /index.html  200
   /:seg1/:seg2/:seg3 /index.html  200
@@ -142,7 +142,7 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   | [Google Analytics 4](https://analytics.google.com) | — | Anonymous visitor analytics |
 
   > **Note on image export:** The standee save/share flow uses native canvas compositing — not `html2canvas`. The card is drawn directly onto a `<canvas>` using the exact colours and layout from `views.css`, then the QR is composited via `ctx.drawImage()` reading the full 1200×1200 source pixels directly. This produces a crisp, pixel-perfect 3× PNG with no font re-rasterisation and no blur.
-  
+
   > **Note on file upload scanning:** `html5-qrcode`'s `scanFile()` uses `createImageBitmap()` internally, which behaves inconsistently in Firefox. File uploads are decoded using `jsQR` directly via `canvas.getImageData()` — this works identically across all browsers.
 
   ### Browser Support
@@ -157,7 +157,8 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   | PWA Install | ✅ | ❌ | ✅ | ✅ |
   | OS Theme Detection | ✅ | ✅ | ✅ | ✅ |
 
-  *\* Torch support depends on device hardware capability, not just the browser.* *† Firefox Android does not support file sharing via the Web Share API. Tapping Share downloads the image and opens a text share sheet with the payment link included in the caption.*
+  *\* Torch support depends on device hardware capability, not just the browser.*  
+  *† Firefox Android does not support file sharing via the Web Share API. Tapping Share downloads the image and opens a text share sheet with the payment link included in the caption.*
 </details>
 
 <details>
