@@ -3,6 +3,7 @@
 // UPInspect v1.0
 // ============================================================
 
+import { state }                        from './state.js';
 import { switchAppView, switchToolTab } from './router.js';
 
 export function showPayLinkButtons() {
@@ -22,6 +23,8 @@ export function plGoCreate() {
 }
 
 function _leavePaylinkPage() {
+  // Reset global flag — ensures smooth scroll and standard UI behaviours return
+  state.isPaymentLinkMode = false;
   // Clean URL back to root
   window.history.replaceState({}, '', '/');
   // Hide payment-link UI
