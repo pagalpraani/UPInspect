@@ -88,7 +88,7 @@ export function generateQRCard() {
   const upiString = buildUpiString(pa, pn, am);
 
   // #6 — Show loading state on button
-  const btn = document.querySelector('[onclick="generateQRCard()"]');
+  const btn = document.querySelector('#createTab button[type="submit"]');
   const originalHTML = btn ? btn.innerHTML : null;
   if (btn) {
     btn.disabled = true;
