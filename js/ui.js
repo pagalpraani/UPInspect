@@ -52,11 +52,24 @@ export function toggleTheme() {
 }
 
 /**
- * Restore theme from localStorage on boot.
+ * Restore theme from localStorage on boot, falling back to OS preference.
  */
 export function restoreTheme() {
-  if (localStorage.getItem('theme') === 'light') {
+  const savedTheme = localStorage.getItem('theme');
+
+  if (savedTheme === 'light') {
     document.body.classList.add('light');
     updateThemeIcon(true);
+  } else if (savedTheme === 'dark') {
+    updateThemeIcon(false);
+  } else {
+    // No saved preference — honour OS/browser setting
+    const osPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    if (osPrefersLight) {
+      document.body.classList.add('light');
+      updateThemeIcon(true);
+    } else {
+      updateThemeIcon(false);
+    }
   }
 }
