@@ -60,7 +60,7 @@ When opened, the link shows a verified payment card with **Pay Now** and **Copy 
 
 ---
 
-## 🛠️ Deployment & Tech Stack
+## 🛠️ Tech Stack
 
 <details>
   <summary><b>Deploying to Cloudflare Pages</b></summary>
@@ -69,16 +69,6 @@ When opened, the link shows a verified payment card with **Pay Now** and **Copy 
   2. Connect it to [Cloudflare Pages](https://pages.cloudflare.com)
   3. Set build command to **none**, output directory to **`/`** (repo root)
   4. The `_redirects` file handles SPA routing. Asset directories are passed through first, then payment link paths fall through to `index.html`:
-
-  ```text
-  /css/*    /css/:splat    200
-  /js/*     /js/:splat     200
-  /assets/* /assets/:splat 200
-
-  /:seg1             /index.html  200
-  /:seg1/:seg2       /index.html  200
-  /:seg1/:seg2/:seg3 /index.html  200
-  ```
 
   > *Asset passthrough rules must come before the catch-all rules — Cloudflare matches the first rule that applies.*
 
