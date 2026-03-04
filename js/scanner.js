@@ -1,6 +1,6 @@
 // ============================================================
 // scanner.js — QR code scanning (camera + file upload)
-// UPInspect v1.0
+// UPInspect
 // ============================================================
 
 import { state, UPI_REGEX } from './state.js';
