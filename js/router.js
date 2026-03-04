@@ -1,6 +1,6 @@
 // ============================================================
 // router.js — App-level view routing & tab switching
-// UPInspect v1.0
+// UPInspect
 // ============================================================
 
 import { stopScanner } from './scanner.js';
@@ -25,6 +25,10 @@ export function switchAppView(viewName) {
   const [viewId, navId] = VIEW_MAP[viewName] ?? [];
   if (viewId) document.getElementById(viewId).classList.add('active');
   if (navId)  document.getElementById(navId).classList.add('active');
+
+  // Show footer on Home and About; hide on Tools
+  const footer = document.getElementById('siteFooter');
+  if (footer) footer.classList.toggle('hidden', viewName === 'tools');
 
   window.scrollTo(0, 0);
 }
