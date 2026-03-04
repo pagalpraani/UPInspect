@@ -125,9 +125,6 @@ export default {
   txtFaq6Q: 'Is UPInspect compliant with UPI rules?',
   txtFaq6A: "Yes. UPInspect does not alter transaction data or modify payment limits. It only decodes publicly embedded UPI QR information and allows users to proceed through official UPI apps. All transactions follow NPCI guidelines and your bank's policies.",
 
-  // ── Footer ──────────────────────────────────────────────
-  txtVersion: 'UPInspect v1.0  ·  MIT License',
-
   // ── Toast / error messages ──────────────────────────────
   txtTorchOn:            'Turn on torch',
   txtTorchOff:           'Turn off torch',
